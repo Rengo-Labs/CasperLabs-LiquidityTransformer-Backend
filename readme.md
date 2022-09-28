@@ -9,7 +9,7 @@ This is the official WISE graphQL code for the Casper network.
 npm install to install the require packages
 npm start to start the server
 
-Heroku App Link: https://wise-graphql-backend.herokuapp.com/
+AWS Link: http://wisegraphqlbackendfinalized-env-1.eba-kecy6vfp.us-east-1.elasticbeanstalk.com/
 
 Endpoints Documentation Link:  
 
