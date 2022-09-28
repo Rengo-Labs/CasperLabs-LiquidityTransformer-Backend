@@ -16,6 +16,7 @@ const handleGiveStatus = {
   description: "Handle Give Status",
   args: {
     referrerId: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -69,6 +70,7 @@ const handleStakeStart = {
     startDay: { type: GraphQLString },
     lockDays: { type: GraphQLString },
     daiEquivalent: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -153,6 +155,7 @@ const handleStakeEnd = {
     closeDay: { type: GraphQLString },
     rewardAmount: { type: GraphQLString },
     penaltyAmount: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -188,6 +191,7 @@ const handleInterestScraped = {
     scrapeAmount: { type: GraphQLString },
     stakersPenalty: { type: GraphQLString },
     referrerPenalty: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -234,6 +238,7 @@ const handleNewGlobals = {
     currentWiseDay: { type: GraphQLString },
     wiseAddress: { type: GraphQLString },
     UNISWAP_PAIR: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -278,6 +283,7 @@ const handleNewSharePrice = {
   args: {
     newSharePrice: { type: GraphQLString },
     oldSharePrice: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -308,6 +314,7 @@ const handleUniswapReserves = {
     reserveA: { type: GraphQLString },
     reserveB: { type: GraphQLString },
     blockTimestampLast: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -362,6 +369,7 @@ const handleLiquidityGuardStatus = {
   description: "Handle LiquidityGuardStatus",
   args: {
     liquidityGuardStatus: { type: GraphQLBoolean },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {

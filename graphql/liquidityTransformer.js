@@ -104,6 +104,7 @@ const handleReferralAdded = {
     referral: { type: GraphQLString },
     referee: { type: GraphQLString },
     amount: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -271,6 +272,7 @@ const handleWiseReservation = {
     tokens: { type: GraphQLString },
     currentWiseDay: { type: GraphQLString },
     investmentMode: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -445,6 +447,7 @@ const handleRefundIssued = {
     refundedTo: { type: GraphQLString },
     amount: { type: GraphQLString },
     deployHash: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -478,6 +481,7 @@ const handleCashBackIssued = {
     senderValue: { type: GraphQLString },
     cashBackAmount: { type: GraphQLString },
     deployHash: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -515,6 +519,7 @@ const handleUniswapSwapedResult = {
     amountTokenB: { type: GraphQLString },
     liquidity: { type: GraphQLString },
     deployHash: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -581,6 +586,7 @@ const handleDepositedLiquidity = {
     user: { type: GraphQLString },
     amount: { type: GraphQLString },
     deployHash: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -631,6 +637,7 @@ const handleWithdrawal = {
     user: { type: GraphQLString },
     amount: { type: GraphQLString },
     deployHash: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -687,6 +694,7 @@ const handleFormedLiquidity = {
     amountTokenB: { type: GraphQLString },
     liquidity: { type: GraphQLString },
     deployHash: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -753,6 +761,7 @@ const handleLiquidityAdded = {
     amountWcspr: { type: GraphQLString },
     amountScspr: { type: GraphQLString },
     liquidity: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -816,6 +825,7 @@ const handleLiquidityRemoved = {
   args: {
     amountWcspr: { type: GraphQLString },
     amountScspr: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -873,6 +883,7 @@ const handleMasterRecord = {
     masterAddress: { type: GraphQLString },
     amount: { type: GraphQLString },
     source: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
