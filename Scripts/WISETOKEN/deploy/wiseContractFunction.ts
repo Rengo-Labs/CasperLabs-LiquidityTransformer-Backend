@@ -65,21 +65,21 @@ const test = async () => {
 	
 	await wise.setContractHash(WISETOKEN_CONTRACT_HASH!);
 
-	const _refferer = new CLByteArray(
-		Uint8Array.from(Buffer.from("7eb6fb7fb5c61de23f296f0accc2d4bda83e7c2a4e95d18d5f466c783b1e2219", "hex"))
-	);
+	// const _refferer = new CLByteArray(
+	// 	Uint8Array.from(Buffer.from("7eb6fb7fb5c61de23f296f0accc2d4bda83e7c2a4e95d18d5f466c783b1e2219", "hex"))
+	// );
 
 	//mint
-	// const mintDeployHash = await wise.mint(
-	// 	KEYS,
-	// 	_refferer,
-	// 	"10000000000000000000000000000000000000000000000",
-	// 	WISE_FUNCTIONS_INSTALL_PAYMENT_AMOUNT!
-	// );
-	// console.log("...Wise Mint deploy hash: ", mintDeployHash);
+	const mintDeployHash = await wise.mint(
+		KEYS,
+		KEYS.publicKey,
+		"10000000000000000000000000000000000000000000000",
+		WISE_FUNCTIONS_INSTALL_PAYMENT_AMOUNT!
+	);
+	console.log("...Wise Mint deploy hash: ", mintDeployHash);
 	
-	// await getDeploy(NODE_ADDRESS!, mintDeployHash);
-	// console.log("... Token minted successfully.");
+	await getDeploy(NODE_ADDRESS!, mintDeployHash);
+	console.log("... Token minted successfully.");
 
 	//setStableUSD
 	// const setBusd = await wise.setStableUsd(
