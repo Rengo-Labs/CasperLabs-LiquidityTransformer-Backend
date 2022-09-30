@@ -14,7 +14,7 @@ const reservationSchema = new Schema({
   user: {
     type: String,
   },
-  investmentDay: {
+  investmentMode: {
     type: String,
   },
   effectiveWei: {

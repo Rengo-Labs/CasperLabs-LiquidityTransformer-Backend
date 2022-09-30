@@ -1,5 +1,6 @@
 require("dotenv").config();
-const { getOrCreateGlobal, createUser, ZERO, ONE } = require("./shared");
+var mongoose = require('mongoose');
+const { getOrCreateGlobal, createUser, ZERO, ONE ,transactionOptions} = require("./shared");
 const { GraphQLString, GraphQLBoolean } = require("graphql");
 var WiseTokenContract = require("../JsClients/WISETOKEN/wiseTokenFunctionsForBackend/functions");
 

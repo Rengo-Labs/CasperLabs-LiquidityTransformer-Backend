@@ -1,10 +1,12 @@
 require("dotenv").config();
+var mongoose = require('mongoose');
 const {
   getOrCreateGlobal,
   createUser,
   ZERO,
   ONE,
   csprVal,
+  transactionOptions
 } = require("./shared");
 const { GraphQLString } = require("graphql");
 
@@ -693,7 +695,7 @@ const handleDepositedLiquidity = {
       let depositedLiquidity = new DepositedLiquidity({
         user: args.user,
         amount: args.amount,
-        deployhash: args.deployHash,
+        deployHash: args.deployHash,
       });
 
       let scsprliquidityresult = await ScsprLiquidity.findOne({
@@ -762,7 +764,7 @@ const handleWithdrawal = {
       let withdrawal = new Withdrawal({
         user: args.user,
         amount: args.amount,
-        deployhash: args.deployHash,
+        deployHash: args.deployHash,
       });
 
       let scsprliquidityresult = await ScsprLiquidity.findOne({

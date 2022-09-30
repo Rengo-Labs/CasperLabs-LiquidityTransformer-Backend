@@ -5,6 +5,12 @@ const ZERO = "0";
 const ONE = "1";
 const WCSPR_PER_CSPR = "1000000000";
 
+const transactionOptions = {
+  readPreference: "primary",
+  readConcern: { level: "local" },
+  writeConcern: { w: "majority" },
+};
+
 function csprVal(cspr) {
   return BigInt(cspr) * BigInt(WCSPR_PER_CSPR);
 }
@@ -69,4 +75,5 @@ module.exports = {
   csprVal,
   getOrCreateGlobal,
   createUser,
+  transactionOptions
 };

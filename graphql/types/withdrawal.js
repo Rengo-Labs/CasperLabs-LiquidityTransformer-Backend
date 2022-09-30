@@ -16,6 +16,9 @@ const withdrawalType = new GraphQLObjectType({
     amount: {
       type: GraphQLString,
     },
+    deployHash: {
+      type: GraphQLString,
+    }
   }),
 });
 
