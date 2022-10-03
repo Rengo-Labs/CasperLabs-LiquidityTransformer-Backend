@@ -5,6 +5,12 @@ const ZERO = "0";
 const ONE = "1";
 const WCSPR_PER_CSPR = "1000000000";
 
+const transactionOptions = {
+  readPreference: "primary",
+  readConcern: { level: "local" },
+  writeConcern: { w: "majority" },
+};
+
 function csprVal(cspr) {
   return BigInt(cspr) * BigInt(WCSPR_PER_CSPR);
 }
@@ -12,7 +18,7 @@ function csprVal(cspr) {
 async function getOrCreateGlobal() {
   let global = await Global.findOne({ id: "0" });
   if (global == null) {
-    let newData = new Global({
+    global = new Global({
       id: "0",
       userCount: ZERO,
       reserverCount: ZERO,
@@ -40,7 +46,6 @@ async function getOrCreateGlobal() {
       totalScsprContributed: ZERO,
       totalTransferTokens: ZERO,
     });
-    global = await Global.create(newData);
   }
   return global;
 }
@@ -61,8 +66,7 @@ async function createUser(id) {
     cmStatusInLaunch: false,
     gasRefunded: ZERO,
   });
-  let user = await User.create(newData);
-  return user;
+  return newData;
 }
 module.exports = {
   ZERO,
@@ -71,4 +75,5 @@ module.exports = {
   csprVal,
   getOrCreateGlobal,
   createUser,
+  transactionOptions
 };

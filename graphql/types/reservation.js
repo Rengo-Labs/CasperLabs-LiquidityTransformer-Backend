@@ -22,7 +22,7 @@ const reservationType = new GraphQLObjectType({
     user: {
       type: GraphQLString,
     },
-    investmentDay: {
+    investmentMode: {
       type: GraphQLString,
     },
     effectiveWei: {

@@ -1,12 +1,13 @@
 require("dotenv").config();
 var { request } = require("graphql-request");
+var eventObjectId="6337101ca0558aa43a11f0df";
 
 async function RefundIssued(refundedTo, amount, deployHash) {
   console.log("Calling handleRefundIssued mutation...");
   let response = await request(
     process.env.GRAPHQL,
-    `mutation handleRefundIssued( $refundedTo: String!, $amount: String!, $deployHash: String!){
-            handleRefundIssued( refundedTo: $refundedTo, amount: $amount, deployHash: $deployHash) {
+    `mutation handleRefundIssued( $refundedTo: String!, $amount: String!, $deployHash: String!,$eventObjectId: String!){
+            handleRefundIssued( refundedTo: $refundedTo, amount: $amount, deployHash: $deployHash,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -15,6 +16,7 @@ async function RefundIssued(refundedTo, amount, deployHash) {
       refundedTo: refundedTo,
       amount: amount,
       deployHash: deployHash,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -30,8 +32,8 @@ async function CashBackIssued(
   console.log("Calling handleCashBackIssued mutation...");
   let response = await request(
     process.env.GRAPHQL,
-    `mutation handleCashBackIssued( $totalCashBack:String!,$senderAddress: String!, $senderValue: String!,$cashBackAmount: String!, $deployHash: String!){
-            handleCashBackIssued( totalCashBack:$totalCashBack, senderAddress: $senderAddress, senderValue: $ senderValue, cashBackAmount: $ cashBackAmount, deployHash: $deployHash) {
+    `mutation handleCashBackIssued( $totalCashBack:String!,$senderAddress: String!, $senderValue: String!,$cashBackAmount: String!, $deployHash: String!,$eventObjectId: String!){
+            handleCashBackIssued( totalCashBack:$totalCashBack, senderAddress: $senderAddress, senderValue: $senderValue, cashBackAmount: $ cashBackAmount, deployHash: $deployHash,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -42,6 +44,7 @@ async function CashBackIssued(
       senderValue: senderValue,
       cashBackAmount: cashBackAmount,
       deployHash: deployHash,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -56,8 +59,8 @@ async function UniswapSwapedResult(
   console.log("Calling handleUniswapSwapedResult mutation...");
   let response = await request(
     process.env.GRAPHQL,
-    `mutation handleUniswapSwapedResult( $amountTokenA:String!,$ amountTokenB: String!, $liquidity: String!,$deployHash: String!){
-            handleUniswapSwapedResult( amountTokenA:$amountTokenA,  amountTokenB: $ amountTokenB, liquidity: $ liquidity, deployHash: $deployHash) {
+    `mutation handleUniswapSwapedResult( $amountTokenA:String!,$ amountTokenB: String!, $liquidity: String!,$deployHash: String!,$eventObjectId: String!){
+            handleUniswapSwapedResult( amountTokenA:$amountTokenA,  amountTokenB: $ amountTokenB, liquidity: $liquidity, deployHash: $deployHash,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -67,6 +70,7 @@ async function UniswapSwapedResult(
       amountTokenB: amountTokenB,
       liquidity: liquidity,
       deployHash: deployHash,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -76,8 +80,8 @@ async function UniswapReserves(reserveA, reserveB, blockTimestampLast) {
   console.log("Calling handleUniswapReserves mutation...");
   let response = await request(
     process.env.GRAPHQL,
-    `mutation handleUniswapReserves( $reserveA:String!,$ reserveB: String!, $blockTimestampLast: String!){
-            handleUniswapReserves( reserveA:$reserveA,  reserveB: $ reserveB, blockTimestampLast: $ blockTimestampLast) {
+    `mutation handleUniswapReserves( $reserveA:String!,$ reserveB: String!, $blockTimestampLast: String!,$eventObjectId: String!){
+            handleUniswapReserves( reserveA:$reserveA,  reserveB: $ reserveB, blockTimestampLast: $ blockTimestampLast,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -86,6 +90,7 @@ async function UniswapReserves(reserveA, reserveB, blockTimestampLast) {
       reserveA: reserveA,
       reserveB: reserveB,
       blockTimestampLast: blockTimestampLast,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -101,14 +106,15 @@ async function LiquidityGuardStatus(liquidityGuardStatusString) {
   console.log("Calling handleLiquidityGuardStatus mutation...");
   let response = await request(
     process.env.GRAPHQL,
-    `mutation handleLiquidityGuardStatus( $liquidityGuardStatus:Boolean!){
-            handleLiquidityGuardStatus( liquidityGuardStatus:$liquidityGuardStatus) {
+    `mutation handleLiquidityGuardStatus( $liquidityGuardStatus:Boolean!,$eventObjectId: String!){
+            handleLiquidityGuardStatus( liquidityGuardStatus:$liquidityGuardStatus,eventObjectId: $eventObjectId) {
               result
           }
                     
           }`,
     {
       liquidityGuardStatus: liquidityGuardStatus,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -117,14 +123,15 @@ async function GiveStatus(referrerId) {
   console.log("Calling handleGiveStatus mutation...");
   let response = await request(
     process.env.GRAPHQL,
-    `mutation handleGiveStatus( $referrerId: String!){
-      handleGiveStatus( referrerId: $referrerId) {
+    `mutation handleGiveStatus( $referrerId: String!,$eventObjectId: String!){
+      handleGiveStatus( referrerId: $referrerId,eventObjectId: $eventObjectId) {
               result
           }
                     
           }`,
     {
       referrerId: referrerId,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -153,7 +160,8 @@ async function StakeStart(
       $stakesShares: String!,
       $startDay: String!,
       $lockDays: String!,
-      $daiEquivalent: String!
+      $daiEquivalent: String!,
+      $eventObjectId: String!
       ){
       handleStakeStart( 
         stakerAddress:$stakerAddress,
@@ -164,7 +172,8 @@ async function StakeStart(
         stakesShares:$stakesShares,
         startDay:$startDay,
         lockDays:$lockDays,
-        daiEquivalent:$daiEquivalent
+        daiEquivalent:$daiEquivalent,
+        eventObjectId: $eventObjectId
         ) {
               result
           }
@@ -180,6 +189,7 @@ async function StakeStart(
       startDay: startDay,
       lockDays: lockDays,
       daiEquivalent: daiEquivalent,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -189,8 +199,8 @@ async function StakeEnd(stakeID, closeDay, rewardAmount, penaltyAmount) {
   console.log("Calling handleStakeEnd mutation...");
   let response = await request(
     process.env.GRAPHQL,
-    `mutation handleStakeEnd( $stakeID: String!, $closeDay: String!, $rewardAmount: String!,$penaltyAmount:String!){
-      handleStakeEnd( stakeID: $stakeID, closeDay: $closeDay, rewardAmount: $rewardAmount,penaltyAmount:$penaltyAmount) {
+    `mutation handleStakeEnd( $stakeID: String!, $closeDay: String!, $rewardAmount: String!,$penaltyAmount:String!,$eventObjectId: String!){
+      handleStakeEnd( stakeID: $stakeID, closeDay: $closeDay, rewardAmount: $rewardAmount,penaltyAmount:$penaltyAmount,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -200,6 +210,7 @@ async function StakeEnd(stakeID, closeDay, rewardAmount, penaltyAmount) {
       closeDay: closeDay,
       rewardAmount: rewardAmount,
       penaltyAmount: penaltyAmount,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -220,14 +231,16 @@ async function InterestScraped(
       $scrapeDay:String!,
       $scrapeAmount:String!,
       $stakersPenalty:String!,
-      $referrerPenalty:String!
+      $referrerPenalty:String!,
+      $eventObjectId: String!
       ){
       handleInterestScraped( 
         stakeID:$stakeID,
         scrapeDay:$scrapeDay,
         scrapeAmount:$scrapeAmount,
         stakersPenalty:$stakersPenalty,
-        referrerPenalty:$referrerPenalty
+        referrerPenalty:$referrerPenalty,
+        eventObjectId: $eventObjectId
         ) {
               result
           }
@@ -239,6 +252,7 @@ async function InterestScraped(
       scrapeAmount: scrapeAmount,
       stakersPenalty: stakersPenalty,
       referrerPenalty: referrerPenalty,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -263,7 +277,8 @@ async function NewGlobals(
       $referrerShares: String!, 
       $currentWiseDay: String!, 
       $wiseAddress: String!, 
-      $UNISWAP_PAIR: String!)
+      $UNISWAP_PAIR: String!,
+      $eventObjectId: String!)
       {
       handleNewGlobals( 
         totalShares: $totalShares, 
@@ -272,7 +287,8 @@ async function NewGlobals(
         referrerShares: $referrerShares,
         currentWiseDay: $currentWiseDay,
         wiseAddress: $wiseAddress,
-        UNISWAP_PAIR: $UNISWAP_PAIR) {
+        UNISWAP_PAIR: $UNISWAP_PAIR,
+        eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -285,6 +301,7 @@ async function NewGlobals(
       currentWiseDay: currentWiseDay,
       wiseAddress: wiseAddress,
       UNISWAP_PAIR: UNISWAP_PAIR,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -294,8 +311,8 @@ async function NewSharePrice(newSharePrice, oldSharePrice) {
   console.log("Calling handleNewSharePrice mutation...");
   let response = await request(
     process.env.GRAPHQL,
-    `mutation handleNewSharePrice( $newSharePrice: String!, $oldSharePrice: String!){
-      handleNewSharePrice( newSharePrice: $newSharePrice, oldSharePrice: $oldSharePrice) {
+    `mutation handleNewSharePrice( $newSharePrice: String!, $oldSharePrice: String!,$eventObjectId: String!){
+      handleNewSharePrice( newSharePrice: $newSharePrice, oldSharePrice: $oldSharePrice,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -303,6 +320,7 @@ async function NewSharePrice(newSharePrice, oldSharePrice) {
     {
       newSharePrice: newSharePrice,
       oldSharePrice: oldSharePrice,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -327,7 +345,8 @@ async function ReferralAdded(
       $from:String!,
       $referral:String!,
       $referee:String!,
-      $amount:String!
+      $amount:String!,
+      $eventObjectId: String!
       ){
       handleReferralAdded( 
         deployHash:$deployHash,
@@ -336,7 +355,8 @@ async function ReferralAdded(
         from:$from,
         referral:$referral,
         referee:$referee,
-        amount:$amount
+        amount:$amount,
+        eventObjectId: $eventObjectId
         ) {
               result
           }
@@ -350,6 +370,7 @@ async function ReferralAdded(
       referral: referral,
       referee: referee,
       amount: amount,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -374,9 +395,10 @@ async function WiseReservation(
         $timestamp:String!,
         $from:String!,
         $amount:String!,
-        $tokens:String!,,
-        $currentWiseDay:String!,,
+        $tokens:String!,
+        $currentWiseDay:String!,
         $investmentMode:String!,
+        $eventObjectId: String!
         ){
         handleWiseReservation( 
         deployHash:$deployHash,
@@ -387,6 +409,7 @@ async function WiseReservation(
         tokens:$tokens,
         currentWiseDay:$currentWiseDay,
         investmentMode:$investmentMode,
+        eventObjectId: $eventObjectId
         ) {
                 result
             }
@@ -401,6 +424,7 @@ async function WiseReservation(
       tokens: tokens,
       currentWiseDay: currentWiseDay,
       investmentMode: investmentMode,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -410,8 +434,8 @@ async function DepositedLiquidity(user, amount, deployHash) {
   console.log("Calling handleDepositedLiquidity mutation...");
   let response = await request(
     process.env.GRAPHQL,
-    `mutation handleDepositedLiquidity( $user: String!, $amount: String!, $deployHash: String!){
-            handleDepositedLiquidity( user: $user, amount: $amount, deployHash: $deployHash) {
+    `mutation handleDepositedLiquidity( $user: String!, $amount: String!, $deployHash: String!,$eventObjectId: String!){
+            handleDepositedLiquidity( user: $user, amount: $amount, deployHash: $deployHash,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -420,6 +444,7 @@ async function DepositedLiquidity(user, amount, deployHash) {
       user: user,
       amount: amount,
       deployHash: deployHash,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -429,8 +454,8 @@ async function Withdrawal(user, amount, deployHash) {
   console.log("Calling handleWithdrawal mutation...");
   let response = await request(
     process.env.GRAPHQL,
-    `mutation handleWithdrawal( $user: String!, $amount: String!, $deployHash: String!){
-            handleWithdrawal( user: $user, amount: $amount, deployHash: $deployHash) {
+    `mutation handleWithdrawal( $user: String!, $amount: String!, $deployHash: String!,$eventObjectId: String!){
+            handleWithdrawal( user: $user, amount: $amount, deployHash: $deployHash,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -439,6 +464,7 @@ async function Withdrawal(user, amount, deployHash) {
       user: user,
       amount: amount,
       deployHash: deployHash,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -454,8 +480,8 @@ async function FormedLiquidity(
   console.log("Calling handleFormedLiquidity mutation...");
   let response = await request(
     process.env.GRAPHQL,
-    `mutation handleFormedLiquidity( $ coverAmount:String! ,$amountTokenA:String!,$ amountTokenB: String!, $liquidity: String!,$deployHash: String!){
-            handleFormedLiquidity( coverAmount:$coverAmount, amountTokenA:$amountTokenA,  amountTokenB: $ amountTokenB, liquidity: $ liquidity, deployHash: $deployHash) {
+    `mutation handleFormedLiquidity( $ coverAmount:String! ,$amountTokenA:String!,$ amountTokenB: String!, $liquidity: String!,$deployHash: String!,$eventObjectId: String!){
+            handleFormedLiquidity( coverAmount:$coverAmount, amountTokenA:$amountTokenA,  amountTokenB: $amountTokenB, liquidity: $liquidity, deployHash: $deployHash,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -466,6 +492,7 @@ async function FormedLiquidity(
       amountTokenB: amountTokenB,
       liquidity: liquidity,
       deployHash: deployHash,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -475,8 +502,8 @@ async function LiquidityAdded(amountWcspr, amountScspr, liquidity) {
   console.log("Calling handleLiquidityAdded mutation...");
   let response = await request(
     process.env.GRAPHQL,
-    `mutation handleLiquidityAdded( $amountWcspr: String!, $amountScspr: String!, $liquidity: String!){
-            handleLiquidityAdded( amountWcspr: $amountWcspr, amountScspr: $amountScspr, liquidity: $liquidity) {
+    `mutation handleLiquidityAdded( $amountWcspr: String!, $amountScspr: String!, $liquidity: String!,$eventObjectId: String!){
+            handleLiquidityAdded( amountWcspr: $amountWcspr, amountScspr: $amountScspr, liquidity: $liquidity,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -485,6 +512,7 @@ async function LiquidityAdded(amountWcspr, amountScspr, liquidity) {
       amountWcspr: amountWcspr,
       amountScspr: amountScspr,
       liquidity: liquidity,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -494,8 +522,8 @@ async function LiquidityRemoved(amountWcspr, amountScspr, liquidity) {
   console.log("Calling handleLiquidityRemoved mutation...");
   let response = await request(
     process.env.GRAPHQL,
-    `mutation handleLiquidityRemoved( $amountWcspr: String!, $amountScspr: String!){
-            handleLiquidityRemoved( amountWcspr: $amountWcspr, amountScspr: $amountScspr) {
+    `mutation handleLiquidityRemoved( $amountWcspr: String!, $amountScspr: String!,$eventObjectId: String!){
+            handleLiquidityRemoved( amountWcspr: $amountWcspr, amountScspr: $amountScspr,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -503,6 +531,7 @@ async function LiquidityRemoved(amountWcspr, amountScspr, liquidity) {
     {
       amountWcspr: amountWcspr,
       amountScspr: amountScspr,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -512,8 +541,8 @@ async function MasterRecord(masterAddress, amount, source) {
   console.log("Calling handleMasterRecord mutation...");
   let response = await request(
     process.env.GRAPHQL,
-    `mutation handleMasterRecord( $masterAddress: String!, $amount: String!, $source: String!){
-            handleMasterRecord( masterAddress: $masterAddress, amount: $amount, source: $source) {
+    `mutation handleMasterRecord( $masterAddress: String!, $amount: String!, $source: String!,$eventObjectId: String!){
+            handleMasterRecord( masterAddress: $masterAddress, amount: $amount, source: $source,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -522,6 +551,7 @@ async function MasterRecord(masterAddress, amount, source) {
       masterAddress: masterAddress,
       amount: amount,
       source: source,
+      eventObjectId:eventObjectId
     }
   );
   console.log(response);
@@ -599,4 +629,4 @@ async function startTests() {
   //await ReferralAdded("123", "123", "123", "123", "123", "123", "10000000000");
 }
 
-//startTests();
+startTests();

@@ -1,5 +1,6 @@
 require("dotenv").config();
-const { getOrCreateGlobal, createUser, ZERO, ONE } = require("./shared");
+var mongoose = require('mongoose');
+const { getOrCreateGlobal, createUser, ZERO, ONE ,transactionOptions} = require("./shared");
 const { GraphQLString, GraphQLBoolean } = require("graphql");
 var WiseTokenContract = require("../JsClients/WISETOKEN/wiseTokenFunctionsForBackend/functions");
 
@@ -7,6 +8,7 @@ const Stake = require("../models/stake");
 const User = require("../models/user");
 const UniswapReserves = require("../models/uniswapReserves");
 const LiquidityGuardStatus = require("../models/liquidityGuardStatus");
+let eventsData = require("../models/eventsData");
 
 const Response = require("../models/response");
 const { responseType } = require("./types/response");
@@ -16,10 +18,12 @@ const handleGiveStatus = {
   description: "Handle Give Status",
   args: {
     referrerId: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
       //let referrerID = call.inputs._referrer.toHex();
+      let global=null;
       let referrerID = args.referrerId;
       let referrer = await User.findOne({ id: referrerID });
       if (referrer == null) {
@@ -29,27 +33,51 @@ const handleGiveStatus = {
         referrer.cmStatus = true;
         referrer.cmStatusInLaunch = true;
 
-        let global = await getOrCreateGlobal();
+        global = await getOrCreateGlobal();
         global.cmStatusCount = (
           BigInt(global.cmStatusCount) + BigInt(ONE)
         ).toString();
         global.cmStatusInLaunchCount = (
           BigInt(global.cmStatusInLaunchCount) + BigInt(ONE)
         ).toString();
-        await global.save();
       }
+      
+      // updating mutation status
+      let eventDataResult = await eventsData.findOne({
+        _id: args.eventObjectId,
+      });
+      eventDataResult.status = "completed";
 
-      await referrer.save();
       let response = await Response.findOne({ id: "1" });
       if (response === null) {
         // create new response
         response = new Response({
           id: "1",
-          result: true,
         });
-        await response.save();
       }
-      return response;
+      response.result = true;
+
+      // Save changes in the database using a transaction
+      const session = await mongoose.startSession();
+      try {
+        await session.withTransaction(async () => {
+          await referrer.save({ session });
+          if(global!=null)
+          {
+            await global.save({ session });
+          }
+          await eventDataResult.save({ session });
+          await response.save({ session });
+
+        }, transactionOptions);
+
+        return response;
+      } catch (error) {
+        throw new Error(error);
+      } finally {
+        // Ending the session
+        await session.endSession();
+      }
     } catch (error) {
       throw new Error(error);
     }
@@ -69,6 +97,7 @@ const handleStakeStart = {
     startDay: { type: GraphQLString },
     lockDays: { type: GraphQLString },
     daiEquivalent: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -86,7 +115,6 @@ const handleStakeStart = {
         ).toString();
       }
       staker.stakeCount = (BigInt(staker.stakeCount) + BigInt(ONE)).toString();
-      await staker.save();
 
       let referrerID = args.referralAddress;
       let referrer = await User.findOne({ id: referrerID });
@@ -103,10 +131,8 @@ const handleStakeStart = {
         }
         referrer.cmStatus = true;
       }
-      await referrer.save();
-      await global.save();
 
-      let newData = new Stake({
+      let stake = new Stake({
         id: args.stakeID,
         staker: staker.id,
         referrer: referrer.id,
@@ -127,18 +153,41 @@ const handleStakeStart = {
         lastScrapeDay: null,
       });
 
-      await Stake.create(newData);
+      // updating mutation status
+      let eventDataResult = await eventsData.findOne({
+        _id: args.eventObjectId,
+      });
+      eventDataResult.status = "completed";
 
       let response = await Response.findOne({ id: "1" });
       if (response === null) {
         // create new response
         response = new Response({
           id: "1",
-          result: true,
         });
-        await response.save();
       }
-      return response;
+      response.result = true;
+
+      // Save changes in the database using a transaction
+      const session = await mongoose.startSession();
+      try {
+        await session.withTransaction(async () => {
+          await staker.save({ session });
+          await referrer.save({ session });
+          await global.save({ session });
+          await stake .save({ session });
+          await eventDataResult.save({ session });
+          await response.save({ session });
+
+        }, transactionOptions);
+
+        return response;
+      } catch (error) {
+        throw new Error(error);
+      } finally {
+        // Ending the session
+        await session.endSession();
+      }
     } catch (error) {
       throw new Error(error);
     }
@@ -153,6 +202,7 @@ const handleStakeEnd = {
     closeDay: { type: GraphQLString },
     rewardAmount: { type: GraphQLString },
     penaltyAmount: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -162,18 +212,38 @@ const handleStakeEnd = {
       stake.penalty = args.penaltyAmount;
       stake.reward = args.rewardAmount;
 
-      await stake.save();
+      // updating mutation status
+      let eventDataResult = await eventsData.findOne({
+        _id: args.eventObjectId,
+      });
+      eventDataResult.status = "completed";
 
       let response = await Response.findOne({ id: "1" });
       if (response === null) {
         // create new response
         response = new Response({
           id: "1",
-          result: true,
         });
-        await response.save();
       }
-      return response;
+      response.result = true;
+
+      // Save changes in the database using a transaction
+      const session = await mongoose.startSession();
+      try {
+        await session.withTransaction(async () => {
+          await stake.save({ session });
+          await eventDataResult.save({ session });
+          await response.save({ session });
+
+        }, transactionOptions);
+
+        return response;
+      } catch (error) {
+        throw new Error(error);
+      } finally {
+        // Ending the session
+        await session.endSession();
+      }
     } catch (error) {
       throw new Error(error);
     }
@@ -188,6 +258,7 @@ const handleInterestScraped = {
     scrapeAmount: { type: GraphQLString },
     stakersPenalty: { type: GraphQLString },
     referrerPenalty: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -206,17 +277,39 @@ const handleInterestScraped = {
       stake.referrerSharesPenalized = (
         BigInt(stake.referrerSharesPenalized) + BigInt(args.referrerPenalty)
       ).toString();
-      await stake.save();
+
+      // updating mutation status
+      let eventDataResult = await eventsData.findOne({
+        _id: args.eventObjectId,
+      });
+      eventDataResult.status = "completed";
+
       let response = await Response.findOne({ id: "1" });
       if (response === null) {
         // create new response
         response = new Response({
           id: "1",
-          result: true,
         });
-        await response.save();
       }
-      return response;
+      response.result = true;
+
+      // Save changes in the database using a transaction
+      const session = await mongoose.startSession();
+      try {
+        await session.withTransaction(async () => {
+          await stake.save({ session });
+          await eventDataResult.save({ session });
+          await response.save({ session });
+
+        }, transactionOptions);
+
+        return response;
+      } catch (error) {
+        throw new Error(error);
+      } finally {
+        // Ending the session
+        await session.endSession();
+      }
     } catch (error) {
       throw new Error(error);
     }
@@ -234,6 +327,7 @@ const handleNewGlobals = {
     currentWiseDay: { type: GraphQLString },
     wiseAddress: { type: GraphQLString },
     UNISWAP_PAIR: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -255,18 +349,39 @@ const handleNewGlobals = {
       global.ownedSupply = (
         BigInt(global.liquidSupply) + BigInt(global.totalStaked)
       ).toString();
-      await global.save();
+
+      // updating mutation status
+      let eventDataResult = await eventsData.findOne({
+        _id: args.eventObjectId,
+      });
+      eventDataResult.status = "completed";
 
       let response = await Response.findOne({ id: "1" });
       if (response === null) {
         // create new response
         response = new Response({
           id: "1",
-          result: true,
         });
-        await response.save();
       }
-      return response;
+      response.result = true;
+
+      // Save changes in the database using a transaction
+      const session = await mongoose.startSession();
+      try {
+        await session.withTransaction(async () => {
+          await global.save({ session });
+          await eventDataResult.save({ session });
+          await response.save({ session });
+
+        }, transactionOptions);
+
+        return response;
+      } catch (error) {
+        throw new Error(error);
+      } finally {
+        // Ending the session
+        await session.endSession();
+      }
     } catch (error) {
       throw new Error(error);
     }
@@ -278,23 +393,46 @@ const handleNewSharePrice = {
   args: {
     newSharePrice: { type: GraphQLString },
     oldSharePrice: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
       let global = await getOrCreateGlobal();
       global.sharePrice = args.newSharePrice;
       global.sharePricePrevious = args.oldSharePrice;
-      await global.save();
+
+      // updating mutation status
+      let eventDataResult = await eventsData.findOne({
+      _id: args.eventObjectId,
+      });
+      eventDataResult.status = "completed";
+
       let response = await Response.findOne({ id: "1" });
       if (response === null) {
         // create new response
         response = new Response({
           id: "1",
-          result: true,
         });
-        await response.save();
       }
-      return response;
+      response.result = true;
+
+      // Save changes in the database using a transaction
+      const session = await mongoose.startSession();
+      try {
+        await session.withTransaction(async () => {
+          await global.save({ session });
+          await eventDataResult.save({ session });
+          await response.save({ session });
+
+        }, transactionOptions);
+
+        return response;
+      } catch (error) {
+        throw new Error(error);
+      } finally {
+        // Ending the session
+        await session.endSession();
+      }
     } catch (error) {
       throw new Error(error);
     }
@@ -308,6 +446,7 @@ const handleUniswapReserves = {
     reserveA: { type: GraphQLString },
     reserveB: { type: GraphQLString },
     blockTimestampLast: { type: GraphQLString },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -320,7 +459,7 @@ const handleUniswapReserves = {
           process.env.PAIR_PACKAGE_HASH,
       });
       if (uniswapReservesResult == null) {
-        let newData = new UniswapReserves({
+        uniswapReservesResult = new UniswapReserves({
           id:
             process.env.WISETOKEN_PACKAGE_HASH +
             " - " +
@@ -334,23 +473,44 @@ const handleUniswapReserves = {
           tokenB: process.env.SYNTHETIC_CSPR_PACKAGE,
           pair: process.env.PAIR_PACKAGE_HASH,
         });
-        await UniswapReserves.create(newData);
       } else {
         uniswapReservesResult.reserveA = args.reserveA;
         uniswapReservesResult.reserveB = args.reserveB;
         uniswapReservesResult.blockTimestampLast = args.blockTimestampLast;
-        await uniswapReservesResult.save();
       }
-      let response = await Response.findOne({ id: "1" });
-      if (response === null) {
-        // create new response
-        response = new Response({
-          id: "1",
-          result: true,
+
+      // updating mutation status
+      let eventDataResult = await eventsData.findOne({
+        _id: args.eventObjectId,
         });
-        await response.save();
-      }
-      return response;
+        eventDataResult.status = "completed";
+  
+        let response = await Response.findOne({ id: "1" });
+        if (response === null) {
+          // create new response
+          response = new Response({
+            id: "1",
+          });
+        }
+        response.result = true;
+  
+        // Save changes in the database using a transaction
+        const session = await mongoose.startSession();
+        try {
+          await session.withTransaction(async () => {
+            await uniswapReservesResult.save({ session });
+            await eventDataResult.save({ session });
+            await response.save({ session });
+  
+          }, transactionOptions);
+  
+          return response;
+        } catch (error) {
+          throw new Error(error);
+        } finally {
+          // Ending the session
+          await session.endSession();
+        }
     } catch (error) {
       throw new Error(error);
     }
@@ -362,6 +522,7 @@ const handleLiquidityGuardStatus = {
   description: "Handle LiquidityGuardStatus",
   args: {
     liquidityGuardStatus: { type: GraphQLBoolean },
+    eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
     try {
@@ -369,26 +530,46 @@ const handleLiquidityGuardStatus = {
         id: "0",
       });
       if (liquidityGuardStatusResult == null) {
-        let newData = new LiquidityGuardStatus({
+        liquidityGuardStatusResult = new LiquidityGuardStatus({
           id: "0",
           liquidityGuardStatus: args.liquidityGuardStatus,
         });
-        await LiquidityGuardStatus.create(newData);
       } else {
-        liquidityGuardStatusResult.liquidityGuardStatus =
-          args.liquidityGuardStatus;
-        await liquidityGuardStatusResult.save();
+        liquidityGuardStatusResult.liquidityGuardStatus = args.liquidityGuardStatus;
       }
-      let response = await Response.findOne({ id: "1" });
-      if (response === null) {
-        // create new response
-        response = new Response({
-          id: "1",
-          result: true,
+
+      // updating mutation status
+      let eventDataResult = await eventsData.findOne({
+        _id: args.eventObjectId,
         });
-        await response.save();
-      }
-      return response;
+        eventDataResult.status = "completed";
+  
+        let response = await Response.findOne({ id: "1" });
+        if (response === null) {
+          // create new response
+          response = new Response({
+            id: "1",
+          });
+        }
+        response.result = true;
+  
+        // Save changes in the database using a transaction
+        const session = await mongoose.startSession();
+        try {
+          await session.withTransaction(async () => {
+            await liquidityGuardStatusResult.save({ session });
+            await eventDataResult.save({ session });
+            await response.save({ session });
+  
+          }, transactionOptions);
+  
+          return response;
+        } catch (error) {
+          throw new Error(error);
+        } finally {
+          // Ending the session
+          await session.endSession();
+        }
     } catch (error) {
       throw new Error(error);
     }

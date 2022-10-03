@@ -8,6 +8,9 @@ const withdrawalSchema = new Schema({
   amount: {
     type: String,
   },
+  deployHash: {
+    type: String,
+  },
 });
 
 var withdrawal = mongoose.model("withdrawal", withdrawalSchema);

@@ -3,7 +3,6 @@ var express = require("express");
 var router = express.Router();
 var { request } = require("graphql-request");
 var allcontractsDataModel = require("../models/allcontractsData");
-const mongoose = require("mongoose");
 
 function splitdata(data) {
   var temp = data.split("(");
@@ -91,8 +90,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("Calling handleRefundIssued mutation...");
       await request(
         process.env.GRAPHQL,
-        `mutation handleRefundIssued( $refundedTo: String!, $amount: String!, $deployHash: String!){
-                handleRefundIssued( refundedTo: $refundedTo, amount: $amount, deployHash: $deployHash) {
+        `mutation handleRefundIssued( $refundedTo: String!, $amount: String!, $deployHash: String!,$eventObjectId: String!){
+                handleRefundIssued( refundedTo: $refundedTo, amount: $amount, deployHash: $deployHash,eventObjectId: $eventObjectId) {
                   result
               }
                         
@@ -101,6 +100,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           refundedTo: refundedTo,
           amount: amount,
           deployHash: deployHash,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleRefundIssued Mutation called.");  
@@ -127,8 +127,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("Calling handleCashBackIssued mutation...");
       await request(
         process.env.GRAPHQL,
-        `mutation handleCashBackIssued( $totalCashBack:String!, $senderAddress: String!, $senderValue: String!,$cashBackAmount: String!, $deployHash: String!){
-                handleCashBackIssued( totalCashBack:$totalCashBack, senderAddress: $senderAddress, senderValue: $senderValue, cashBackAmount: $cashBackAmount, deployHash: $deployHash) {
+        `mutation handleCashBackIssued( $totalCashBack:String!, $senderAddress: String!, $senderValue: String!,$cashBackAmount: String!, $deployHash: String!,$eventObjectId: String!){
+                handleCashBackIssued( totalCashBack:$totalCashBack, senderAddress: $senderAddress, senderValue: $senderValue, cashBackAmount: $cashBackAmount, deployHash: $deployHash,eventObjectId: $eventObjectId) {
                   result
               }
                         
@@ -139,6 +139,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           senderValue: senderValue,
           cashBackAmount: cashBackAmount,
           deployHash: deployHash,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleCashBackIssued Mutation called.");  
@@ -156,14 +157,15 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("Calling handleGiveStatus mutation...");
       await request(
         process.env.GRAPHQL,
-        `mutation handleGiveStatus( $referrerId: String!){
-            handleGiveStatus( referrerId: $referrerId) {
+        `mutation handleGiveStatus( $referrerId: String!,$eventObjectId: String!){
+            handleGiveStatus( referrerId: $referrerId,eventObjectId: $eventObjectId) {
                     result
                 }
                           
                 }`,
         {
           referrerId: referrerId,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleGiveStatus  Mutation called.");  
@@ -187,8 +189,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("Calling handleUniswapSwapedResult mutation...");
       await request(
         process.env.GRAPHQL,
-        `mutation handleUniswapSwapedResult( $amountTokenA:String!,$ amountTokenB: String!, $liquidity: String!,$deployHash: String!){
-            handleUniswapSwapedResult( amountTokenA:$amountTokenA,  amountTokenB: $ amountTokenB, liquidity: $ liquidity, deployHash: $deployHash) {
+        `mutation handleUniswapSwapedResult( $amountTokenA:String!,$ amountTokenB: String!, $liquidity: String!,$deployHash: String!,$eventObjectId: String!){
+            handleUniswapSwapedResult( amountTokenA:$amountTokenA,  amountTokenB: $ amountTokenB, liquidity: $ liquidity, deployHash: $deployHash,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -198,6 +200,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           amountTokenB: amountTokenB,
           liquidity: liquidity,
           deployHash: deployHash,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleUniswapSwapedResult  Mutation called.");  
@@ -221,8 +224,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("Calling handleUniswapReserves mutation...");
       await request(
         process.env.GRAPHQL,
-        `mutation handleUniswapReserves( $reserveA:String!,$ reserveB: String!, $blockTimestampLast: String!){
-            handleUniswapReserves( reserveA:$reserveA,  reserveB: $ reserveB, blockTimestampLast: $ blockTimestampLast) {
+        `mutation handleUniswapReserves( $reserveA:String!,$ reserveB: String!, $blockTimestampLast: String!,$eventObjectId: String!){
+            handleUniswapReserves( reserveA:$reserveA,  reserveB: $ reserveB, blockTimestampLast: $ blockTimestampLast,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -231,6 +234,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           reserveA: reserveA,
           reserveB: reserveB,
           blockTimestampLast: blockTimestampLast,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleUniswapReserves  Mutation called.");  
@@ -254,14 +258,15 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("Calling handleLiquidityGuardStatus mutation...");
       await request(
         process.env.GRAPHQL,
-        `mutation handleLiquidityGuardStatus( $liquidityGuardStatus:Boolean!){
-            handleLiquidityGuardStatus( liquidityGuardStatus:$liquidityGuardStatus) {
+        `mutation handleLiquidityGuardStatus( $liquidityGuardStatus:Boolean!,$eventObjectId: String!){
+            handleLiquidityGuardStatus( liquidityGuardStatus:$liquidityGuardStatus,eventObjectId: $eventObjectId) {
               result
           }
                     
           }`,
         {
           liquidityGuardStatus: liquidityGuardStatus,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleLiquidityGuardStatus  Mutation called.");  
@@ -289,7 +294,9 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("rewardAmount: ", rewardAmount);
 
       console.log("handleReferralCollected  Mutation don't exists.");  
-      return true; 
+      eventResult.status="completed";
+      await eventResult.save();
+      return true;
 
     } else if (eventName == "stake_start") {
       console.log(eventName + " Event result: ");
@@ -337,7 +344,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           $stakesShares: String!,
           $startDay: String!,
           $lockDays: String!,
-          $daiEquivalent: String!
+          $daiEquivalent: String!,
+          $eventObjectId: String!
           ){
           handleStakeStart( 
             stakerAddress:$stakerAddress,
@@ -348,7 +356,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
             stakesShares:$stakesShares,
             startDay:$startDay,
             lockDays:$lockDays,
-            daiEquivalent:$daiEquivalent
+            daiEquivalent:$daiEquivalent,
+            eventObjectId: $eventObjectId
             ) {
                   result
               }
@@ -364,6 +373,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           startDay: startDay,
           lockDays: lockDays,
           daiEquivalent: daiEquivalent,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleStakeStart  Mutation called.");  
@@ -405,8 +415,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("Calling handleStakeEnd mutation...");
       await request(
         process.env.GRAPHQL,
-        `mutation handleStakeEnd( $stakeID: String!, $closeDay: String!, $rewardAmount: String!,$penaltyAmount:String!){
-          handleStakeEnd( stakeID: $stakeID, closeDay: $closeDay, rewardAmount: $rewardAmount,penaltyAmount:$penaltyAmount) {
+        `mutation handleStakeEnd( $stakeID: String!, $closeDay: String!, $rewardAmount: String!,$penaltyAmount:String!,$eventObjectId: String!){
+          handleStakeEnd( stakeID: $stakeID, closeDay: $closeDay, rewardAmount: $rewardAmount,penaltyAmount:$penaltyAmount,eventObjectId: $eventObjectId) {
                   result
               }
                         
@@ -416,6 +426,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           closeDay: closeDay,
           rewardAmount: rewardAmount,
           penaltyAmount: penaltyAmount,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleStakeEnd  Mutation called.");  
@@ -456,14 +467,16 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
             $scrapeDay:String!,
             $scrapeAmount:String!,
             $stakersPenalty:String!,
-            $referrerPenalty:String!
+            $referrerPenalty:String!,
+            $eventObjectId: String!
             ){
             handleInterestScraped( 
               stakeID:$stakeID,
               scrapeDay:$scrapeDay,
               scrapeAmount:$scrapeAmount,
               stakersPenalty:$stakersPenalty,
-              referrerPenalty:$referrerPenalty
+              referrerPenalty:$referrerPenalty,
+              eventObjectId: $eventObjectId
               ) {
                     result
                 }
@@ -475,6 +488,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           scrapeAmount: scrapeAmount,
           stakersPenalty: stakersPenalty,
           referrerPenalty: referrerPenalty,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleInterestScraped  Mutation called.");  
@@ -517,7 +531,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
             $referrerShares: String!, 
             $currentWiseDay: String!, 
             $wiseAddress: String!, 
-            $UNISWAP_PAIR: String!)
+            $UNISWAP_PAIR: String!,
+            $eventObjectId: String!)
             {
             handleNewGlobals( 
               totalShares: $totalShares, 
@@ -526,7 +541,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
               referrerShares: $referrerShares,
               currentWiseDay: $currentWiseDay,
               wiseAddress: $wiseAddress,
-              UNISWAP_PAIR: $UNISWAP_PAIR) {
+              UNISWAP_PAIR: $UNISWAP_PAIR,
+              eventObjectId: $eventObjectId) {
                     result
                 }
                           
@@ -539,6 +555,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           currentWiseDay: currentWiseDay,
           wiseAddress: wiseAddress,
           UNISWAP_PAIR: UNISWAP_PAIR,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleNewGlobals  Mutation called.");  
@@ -562,8 +579,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("Calling handleNewSharePrice mutation...");
       await request(
         process.env.GRAPHQL,
-        `mutation handleNewSharePrice( $newSharePrice: String!, $oldSharePrice: String!){
-            handleNewSharePrice( newSharePrice: $newSharePrice, oldSharePrice: $oldSharePrice) {
+        `mutation handleNewSharePrice( $newSharePrice: String!, $oldSharePrice: String!,$eventObjectId: String!){
+            handleNewSharePrice( newSharePrice: $newSharePrice, oldSharePrice: $oldSharePrice,eventObjectId: $eventObjectId) {
                     result
                 }
                           
@@ -571,6 +588,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
         {
           newSharePrice: newSharePrice,
           oldSharePrice: oldSharePrice,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleNewSharePrice  Mutation called.");  
@@ -604,7 +622,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
             $from:String!,
             $referral:String!,
             $referee:String!,
-            $amount:String!
+            $amount:String!,
+            $eventObjectId: String!
             ){
             handleReferralAdded( 
               deployHash:$deployHash,
@@ -613,7 +632,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
               from:$from,
               referral:$referral,
               referee:$referee,
-              amount:$amount
+              amount:$amount,
+              eventObjectId: $eventObjectId
               ) {
                     result
                 }
@@ -627,6 +647,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           referral: referral,
           referee: referee,
           amount: amount,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleReferralAdded  Mutation called.");  
@@ -661,9 +682,10 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
             $timestamp:String!,
             $from:String!,
             $amount:String!,
-            $tokens:String!,,
-            $currentWiseDay:String!,,
+            $tokens:String!,
+            $currentWiseDay:String!,
             $investmentMode:String!,
+            $eventObjectId: String!
             ){
             handleWiseReservation( 
             deployHash:$deployHash,
@@ -674,6 +696,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
             tokens:$tokens,
             currentWiseDay:$currentWiseDay,
             investmentMode:$investmentMode,
+            eventObjectId: $eventObjectId
             ) {
                     result
                 }
@@ -688,6 +711,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           tokens: tokens,
           currentWiseDay: currentWiseDay,
           investmentMode: investmentMode,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleWiseReservation  Mutation called.");  
@@ -708,8 +732,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("Calling handleDepositedLiquidity mutation...");
       await request(
         process.env.GRAPHQL,
-        `mutation handleDepositedLiquidity( $user: String!, $amount: String!, $deployHash: String!){
-            handleDepositedLiquidity( user: $user, amount: $amount, deployHash: $deployHash) {
+        `mutation handleDepositedLiquidity( $user: String!, $amount: String!, $deployHash: String!,$eventObjectId: String!){
+            handleDepositedLiquidity( user: $user, amount: $amount, deployHash: $deployHash,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -718,6 +742,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           user: transformerAddress,
           amount: depositAmount,
           deployHash: deployHash,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleDepositedLiquidity  Mutation called.");  
@@ -738,8 +763,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("Calling handleWithdrawal mutation...");
       await request(
         process.env.GRAPHQL,
-        `mutation handleWithdrawal( $user: String!, $amount: String!, $deployHash: String!){
-                handleWithdrawal( user: $user, amount: $amount, deployHash: $deployHash) {
+        `mutation handleWithdrawal( $user: String!, $amount: String!, $deployHash: String!,$eventObjectId: String!){
+                handleWithdrawal( user: $user, amount: $amount, deployHash: $deployHash,eventObjectId: $eventObjectId) {
                   result
               }
                         
@@ -748,6 +773,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           user: fromAddress,
           amount: tokenAmount,
           deployHash: deployHash,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleWithdrawal  Mutation called.");  
@@ -774,8 +800,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("Calling handleFormedLiquidity mutation...");
       await request(
         process.env.GRAPHQL,
-        `mutation handleFormedLiquidity( $ coverAmount:String! ,$amountTokenA:String!,$ amountTokenB: String!, $liquidity: String!,$deployHash: String!){
-            handleFormedLiquidity( coverAmount:$coverAmount, amountTokenA:$amountTokenA,  amountTokenB: $ amountTokenB, liquidity: $ liquidity, deployHash: $deployHash) {
+        `mutation handleFormedLiquidity( $ coverAmount:String! ,$amountTokenA:String!,$ amountTokenB: String!, $liquidity: String!,$deployHash: String!,$eventObjectId: String!){
+            handleFormedLiquidity( coverAmount:$coverAmount, amountTokenA:$amountTokenA,  amountTokenB: $ amountTokenB, liquidity: $ liquidity, deployHash: $deployHash,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -786,6 +812,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           amountTokenB: amountTokenB,
           liquidity: liquidity,
           deployHash: deployHash,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleFormedLiquidity  Mutation called.");  
@@ -806,8 +833,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("Calling handleLiquidityRemoved mutation...");
       await request(
         process.env.GRAPHQL,
-        `mutation handleLiquidityRemoved( $amountWcspr: String!, $amountScspr: String!){
-                handleLiquidityRemoved( amountWcspr: $amountWcspr, amountScspr: $amountScspr) {
+        `mutation handleLiquidityRemoved( $amountWcspr: String!, $amountScspr: String!,$eventObjectId: String!){
+                handleLiquidityRemoved( amountWcspr: $amountWcspr, amountScspr: $amountScspr,eventObjectId: $eventObjectId) {
                   result
               }
                         
@@ -815,6 +842,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
         {
           amountWcspr: amountWcspr,
           amountScspr: amountScspr,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleLiquidityRemoved  Mutation called.");  
@@ -835,8 +863,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("Calling handleMasterRecord mutation...");
       await request(
         process.env.GRAPHQL,
-        `mutation handleMasterRecord( $masterAddress: String!, $amount: String!, $source: String!){
-            handleMasterRecord( masterAddress: $masterAddress, amount: $amount, source: $source) {
+        `mutation handleMasterRecord( $masterAddress: String!, $amount: String!, $source: String!,$eventObjectId: String!){
+            handleMasterRecord( masterAddress: $masterAddress, amount: $amount, source: $source,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -845,6 +873,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           masterAddress: masterAddress,
           amount: amountWcspr,
           source: eventName,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleMasterRecord  Mutation called.");  
@@ -868,8 +897,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("Calling handleLiquidityAdded mutation...");
       await request(
         process.env.GRAPHQL,
-        `mutation handleLiquidityAdded( $amountWcspr: String!, $amountScspr: String!, $liquidity: String!){
-                handleLiquidityAdded( amountWcspr: $amountWcspr, amountScspr: $amountScspr, liquidity: $liquidity) {
+        `mutation handleLiquidityAdded( $amountWcspr: String!, $amountScspr: String!, $liquidity: String!,$eventObjectId: String!){
+                handleLiquidityAdded( amountWcspr: $amountWcspr, amountScspr: $amountScspr, liquidity: $liquidity,eventObjectId: $eventObjectId) {
                   result
               }
                         
@@ -878,6 +907,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           amountWcspr: amountWcspr,
           amountScspr: amountScspr,
           liquidity: liquidity,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleLiquidityAdded  Mutation called.");  
@@ -898,8 +928,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("Calling handleMasterRecord mutation...");
       await request(
         process.env.GRAPHQL,
-        `mutation handleMasterRecord( $masterAddress: String!, $amount: String!, $source: String!){
-            handleMasterRecord( masterAddress: $masterAddress, amount: $amount, source: $source) {
+        `mutation handleMasterRecord( $masterAddress: String!, $amount: String!, $source: String!,$eventObjectId: String!){
+            handleMasterRecord( masterAddress: $masterAddress, amount: $amount, source: $source,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -908,6 +938,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           masterAddress: masterAddress,
           amount: amountWcspr,
           source: eventName,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleMasterRecord  Mutation called.");  
@@ -928,8 +959,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       console.log("Calling handleMasterRecord mutation...");
       await request(
         process.env.GRAPHQL,
-        `mutation handleMasterRecord( $masterAddress: String!, $amount: String!, $source: String!){
-            handleMasterRecord( masterAddress: $masterAddress, amount: $amount, source: $source) {
+        `mutation handleMasterRecord( $masterAddress: String!, $amount: String!, $source: String!,$eventObjectId: String!){
+            handleMasterRecord( masterAddress: $masterAddress, amount: $amount, source: $source,eventObjectId: $eventObjectId) {
               result
           }
                     
@@ -938,10 +969,16 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           masterAddress: masterAddress,
           amount: amountWcspr,
           source: eventName,
+          eventObjectId:eventResult._id
         }
       )
       console.log("handleMasterRecord  Mutation called.");  
       return true; 
+    } else {
+      console.log("There is no mutation for the event: ",eventName);
+      eventResult.status="completed";
+      await eventResult.save();
+      return true;
     }
   } catch (error) {
     console.log("error (try-catch) : " + error);
