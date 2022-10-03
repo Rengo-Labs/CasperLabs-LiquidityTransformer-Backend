@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const Global = require("../models/global");
+var bigdecimal = require("bigdecimal");
 
 const ZERO = "0";
 const ONE = "1";
@@ -12,7 +13,7 @@ const transactionOptions = {
 };
 
 function csprVal(cspr) {
-  return BigInt(cspr) * BigInt(WCSPR_PER_CSPR);
+  return new bigdecimal.BigDecimal(cspr).multiply(new bigdecimal.BigDecimal(WCSPR_PER_CSPR));
 }
 
 async function getOrCreateGlobal() {

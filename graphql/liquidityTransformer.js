@@ -25,6 +25,7 @@ const FormedLiquidity = require("../models/formedLiquidity");
 const MasterRecord = require("../models/MasterRecord");
 const Response = require("../models/response");
 let eventsData = require("../models/eventsData");
+var bigdecimal = require("bigdecimal");
 
 const { responseType } = require("./types/response");
 
@@ -40,36 +41,36 @@ let MIN_SUPPLY_5 = csprVal(2500000);
 let MIN_SUPPLY_6 = csprVal(1);
 
 function getMinSupply(day) {
-  let dayVal = day / BigInt(1000000000);
+  let dayVal = day / new bigdecimal.BigDecimal(1000000000);
   switch (dayVal) {
-    case BigInt(8):
-    case BigInt(10):
+    case new bigdecimal.BigDecimal(8):
+    case new bigdecimal.BigDecimal(10):
       return MIN_SUPPLY_1;
-    case BigInt(14):
-    case BigInt(16):
-    case BigInt(17):
+    case new bigdecimal.BigDecimal(14):
+    case new bigdecimal.BigDecimal(16):
+    case new bigdecimal.BigDecimal(17):
       return MIN_SUPPLY_2;
-    case BigInt(21):
-    case BigInt(23):
-    case BigInt(25):
+    case new bigdecimal.BigDecimal(21):
+    case new bigdecimal.BigDecimal(23):
+    case new bigdecimal.BigDecimal(25):
       return MIN_SUPPLY_3;
-    case BigInt(29):
-    case BigInt(31):
+    case new bigdecimal.BigDecimal(29):
+    case new bigdecimal.BigDecimal(31):
       return MIN_SUPPLY_4;
-    case BigInt(35):
-    case BigInt(36):
-    case BigInt(38):
+    case new bigdecimal.BigDecimal(35):
+    case new bigdecimal.BigDecimal(36):
+    case new bigdecimal.BigDecimal(38):
       return MIN_SUPPLY_5;
-    case BigInt(12):
-    case BigInt(19):
-    case BigInt(26):
-    case BigInt(33):
-    case BigInt(40):
-    case BigInt(42):
-    case BigInt(44):
-    case BigInt(46):
-    case BigInt(47):
-    case BigInt(48):
+    case new bigdecimal.BigDecimal(12):
+    case new bigdecimal.BigDecimal(19):
+    case new bigdecimal.BigDecimal(26):
+    case new bigdecimal.BigDecimal(33):
+    case new bigdecimal.BigDecimal(40):
+    case new bigdecimal.BigDecimal(42):
+    case new bigdecimal.BigDecimal(44):
+    case new bigdecimal.BigDecimal(46):
+    case new bigdecimal.BigDecimal(47):
+    case new bigdecimal.BigDecimal(48):
       return MIN_SUPPLY_6;
     default:
       return NORMAL_SUPPLY;
@@ -123,12 +124,12 @@ const handleReferralAdded = {
       let referrer = await User.findOne({ id: referrerID });
       if (referrer == null) {
         referrer = await createUser(referrerID);
-        global.userCount = (BigInt(global.userCount) + BigInt(ONE)).toString();
+        global.userCount = (new bigdecimal.BigDecimal(global.userCount).add(new bigdecimal.BigDecimal(ONE))).toString();
       }
       // TODO refactor more == and maybe other operators
       if (referrer.reservationReferralCount == ZERO) {
         global.reservationReferrerCount = (
-          BigInt(global.reservationReferrerCount) + BigInt(ONE)
+          new bigdecimal.BigDecimal(global.reservationReferrerCount).add(new bigdecimal.BigDecimal(ONE))
         ).toString();
       }
 
@@ -136,20 +137,20 @@ const handleReferralAdded = {
       let referee = await User.findOne({ id: refereeID });
       if (referee == null) {
         referee = await createUser(refereeID);
-        global.userCount = (BigInt(global.userCount) + BigInt(ONE)).toString();
+        global.userCount = (new bigdecimal.BigDecimal(global.userCount).add(new bigdecimal.BigDecimal(ONE))).toString();
       }
 
       let reservedEffectiveEth =
-        (BigInt(args.amount) * BigInt(11)) / BigInt(10);
+        (new bigdecimal.BigDecimal(args.amount).multiply(new bigdecimal.BigDecimal(11))).divide(new bigdecimal.BigDecimal(10));
       referee.reservationActualWei = (
-        BigInt(referee.reservationActualWei) +
-        BigInt(args.amount) -
-        reservedEffectiveEth
+        new bigdecimal.BigDecimal(referee.reservationActualWei).add(
+        new bigdecimal.BigDecimal(args.amount)).subtract(
+        reservedEffectiveEth)
       ).toString();
       global.reservationActualWei = (
-        BigInt(global.reservationActualWei) +
-        BigInt(args.amount) -
-        reservedEffectiveEth
+        new bigdecimal.BigDecimal(global.reservationActualWei).add(
+        new bigdecimal.BigDecimal(args.amount)).subtract(
+        reservedEffectiveEth)
       ).toString();
 
       let referralID = args.deployHash;
@@ -164,7 +165,7 @@ const handleReferralAdded = {
 
       let wasBelowCm = false;
       if (
-        BigInt(referrer.reservationReferralActualWei) < CM_REFERRER_THRESHOLD
+        new bigdecimal.BigDecimal(referrer.reservationReferralActualWei).compareTo(CM_REFERRER_THRESHOLD) == -1
       ) {
         wasBelowCm = true;
       } else {
@@ -172,25 +173,25 @@ const handleReferralAdded = {
       }
 
       referrer.reservationReferralActualWei = (
-        BigInt(referrer.reservationReferralActualWei) +
-        BigInt(referral.actualWei)
+        new bigdecimal.BigDecimal(referrer.reservationReferralActualWei).add(
+        new bigdecimal.BigDecimal(referral.actualWei))
       ).toString();
       referrer.reservationReferralCount = (
-        BigInt(referrer.reservationReferralCount) + BigInt(ONE)
+        new bigdecimal.BigDecimal(referrer.reservationReferralCount).add(new bigdecimal.BigDecimal(ONE))
       ).toString();
       if (
         wasBelowCm &&
-        BigInt(referrer.reservationReferralActualWei) >=
-          CM_REFERRER_THRESHOLD &&
-        referrer.cmStatus === false
+        (new bigdecimal.BigDecimal(referrer.reservationReferralActualWei).compareTo(CM_REFERRER_THRESHOLD) == 1 
+        || new bigdecimal.BigDecimal(referrer.reservationReferralActualWei).compareTo(CM_REFERRER_THRESHOLD) == 0)
+        && referrer.cmStatus === false
       ) {
         referrer.cmStatus = true;
         referrer.cmStatusInLaunch = true;
         global.cmStatusCount = (
-          BigInt(global.cmStatusCount) + BigInt(ONE)
+          new bigdecimal.BigDecimal(global.cmStatusCount).add(new bigdecimal.BigDecimal(ONE))
         ).toString();
         global.cmStatusInLaunchCount = (
-          BigInt(global.cmStatusInLaunchCount) + BigInt(ONE)
+          new bigdecimal.BigDecimal(global.cmStatusInLaunchCount).add(new bigdecimal.BigDecimal(ONE))
         ).toString();
       }
       transaction.referral = referral.id;
@@ -205,9 +206,9 @@ const handleReferralAdded = {
           // TODO populate reservation.referral and save?  Too costly?
         }
       }
-      let nRes = BigInt(resList.length);
-      let dayActualWei = BigInt(referral.actualWei) / nRes;
-      let remainder = BigInt(referral.actualWei) % nRes;
+      let nRes = new bigdecimal.BigDecimal(resList.length);
+      let dayActualWei = new bigdecimal.BigDecimal(referral.actualWei).divide(nRes);
+      let remainder = new bigdecimal.BigDecimal(referral.actualWei) % (nRes);
       for (let i = 0; i < resList.length; i++) {
         let actualWei = i === 0 ? dayActualWei + remainder : dayActualWei;
 
@@ -216,27 +217,27 @@ const handleReferralAdded = {
         //await res.save();
 
         let uResDay = await UserReservationDay.findOne({
-          id: res.user + "-" + res.investmentDay,
+          id: res.user + "-" + res.investmentMode,
         });
         uResDay.actualWei = (
-          BigInt(uResDay.actualWei) +
-          BigInt(res.actualWei) -
-          BigInt(res.effectiveWei)
+          new bigdecimal.BigDecimal(uResDay.actualWei).add(
+          new bigdecimal.BigDecimal(res.actualWei)).subtract(
+          new bigdecimal.BigDecimal(res.effectiveWei))
         ).toString();
         //await uResDay.save();
 
         let gResDay = await GlobalReservationDay.findOne({
-          id: res.investmentDay,
+          id: res.investmentMode,
         });
         gResDay.actualWei = (
-          BigInt(gResDay.actualWei) +
-          BigInt(res.actualWei) -
-          BigInt(res.effectiveWei)
+          new bigdecimal.BigDecimal(gResDay.actualWei).add(
+          new bigdecimal.BigDecimal(res.actualWei)).subtract(
+          new bigdecimal.BigDecimal(res.effectiveWei))
         ).toString();
         //await gResDay.save();
 
         let gResDaySnapshot = new GlobalReservationDaySnapshot({
-          id: res.investmentDay + "-" + args.timestamp,
+          id: res.investmentMode + "-" + args.timestamp,
           actualWei: gResDay.actualWei,
         });
         //await GlobalReservationDaySnapshot.create(gResDaySnapshot);
@@ -300,7 +301,7 @@ const handleWiseReservation = {
     try {
       let global = await getOrCreateGlobal();
       global.reservationCount = (
-        BigInt(global.reservationCount) + BigInt(ONE)
+        new bigdecimal.BigDecimal(global.reservationCount).add(new bigdecimal.BigDecimal(ONE))
       ).toString();
       global.currentWiseDay = args.currentWiseDay;
 
@@ -315,11 +316,11 @@ const handleWiseReservation = {
       let user = await User.findOne({ id: userID });
       if (user == null) {
         user = await createUser(userID);
-        global.userCount = (BigInt(global.userCount) + BigInt(ONE)).toString();
+        global.userCount = (new bigdecimal.BigDecimal(global.userCount).add(new bigdecimal.BigDecimal(ONE))).toString();
       }
       if (user.reservationCount == ZERO) {
         global.reserverCount = (
-          BigInt(global.reserverCount) + BigInt(ONE)
+          new bigdecimal.BigDecimal(global.reserverCount).add(new bigdecimal.BigDecimal(ONE))
         ).toString();
       }
 
@@ -338,46 +339,46 @@ const handleWiseReservation = {
       });
 
       user.reservationCount = (
-        BigInt(user.reservationCount) + BigInt(ONE)
+        new bigdecimal.BigDecimal(user.reservationCount).add(new bigdecimal.BigDecimal(ONE))
       ).toString();
       user.reservationEffectiveWei = (
-        BigInt(user.reservationEffectiveWei) + BigInt(reservation.effectiveWei)
+        new bigdecimal.BigDecimal(user.reservationEffectiveWei).add(new bigdecimal.BigDecimal(reservation.effectiveWei))
       ).toString();
       user.reservationActualWei = (
-        BigInt(user.reservationActualWei) + BigInt(reservation.effectiveWei)
+        new bigdecimal.BigDecimal(user.reservationActualWei).add(new bigdecimal.BigDecimal(reservation.effectiveWei))
       ).toString();
 
       user.scsprContributed = (
-        BigInt(user.scsprContributed) + BigInt(args.amount)
+        new bigdecimal.BigDecimal(user.scsprContributed).add(new bigdecimal.BigDecimal(args.amount))
       ).toString();
       user.transferTokens = (
-        BigInt(user.transferTokens) + BigInt(args.tokens)
+        new bigdecimal.BigDecimal(user.transferTokens).add(new bigdecimal.BigDecimal(args.tokens))
       ).toString();
 
       global.reservationEffectiveWei = (
-        BigInt(global.reservationEffectiveWei) +
-        BigInt(reservation.effectiveWei)
+        new bigdecimal.BigDecimal(global.reservationEffectiveWei) .add(
+        new bigdecimal.BigDecimal(reservation.effectiveWei))
       ).toString();
       global.reservationActualWei = (
-        BigInt(global.reservationActualWei) + BigInt(reservation.effectiveWei)
+        new bigdecimal.BigDecimal(global.reservationActualWei).add(new bigdecimal.BigDecimal(reservation.effectiveWei))
       ).toString();
 
       global.totalScsprContributed = (
-        BigInt(global.totalScsprContributed) + BigInt(args.amount)
+        new bigdecimal.BigDecimal(global.totalScsprContributed).add(new bigdecimal.BigDecimal(args.amount))
       ).toString();
       global.totalTransferTokens = (
-        BigInt(global.totalTransferTokens) + BigInt(args.tokens)
+        new bigdecimal.BigDecimal(global.totalTransferTokens).add(new bigdecimal.BigDecimal(args.tokens))
       ).toString();
 
-      // let gResDayID = reservation.investmentDay;
+      // let gResDayID = reservation.investmentMode;
       // let gResDay = await GlobalReservationDay.findOne({ id: gResDayID });
       // if (gResDay == null) {
       //   gResDay = new GlobalReservationDay({
       //     id: gResDayID,
-      //     investmentDay: reservation.investmentDay,
-      //     minSupply: getMinSupply(BigInt(reservation.investmentDay)).toString(),
+      //     investmentMode: reservation.investmentMode,
+      //     minSupply: getMinSupply(new bigdecimal.BigDecimal(reservation.investmentMode)).toString(),
       //     maxSupply: (
-      //       MAX_SUPPLY - getMinSupply(BigInt(reservation.investmentDay))
+      //       MAX_SUPPLY - getMinSupply(new bigdecimal.BigDecimal(reservation.investmentMode))
       //     ).toString(),
       //     effectiveWei: ZERO,
       //     actualWei: ZERO,
@@ -387,53 +388,53 @@ const handleWiseReservation = {
       //   await GlobalReservationDay.create(gResDay);
       // }
       // gResDay.effectiveWei = (
-      //   BigInt(gResDay.effectiveWei) + BigInt(reservation.effectiveWei)
+      //   new bigdecimal.BigDecimal(gResDay.effectiveWei).add( new bigdecimal.BigDecimal(reservation.effectiveWei))
       // ).toString();
       // gResDay.actualWei = (
-      //   BigInt(gResDay.actualWei) + BigInt(reservation.effectiveWei)
+      //   new bigdecimal.BigDecimal(gResDay.actualWei).add(new bigdecimal.BigDecimal(reservation.effectiveWei))
       // ).toString();
       // gResDay.reservationCount = (
-      //   BigInt(gResDay.reservationCount) + BigInt(ONE)
+      //   new bigdecimal.BigDecimal(gResDay.reservationCount).add(new bigdecimal.BigDecimal(ONE))
       // ).toString();
 
-      // let gResDaySnapshotID = reservation.investmentDay + "-" + args.timestamp;
+      // let gResDaySnapshotID = reservation.investmentMode + "-" + args.timestamp;
       // let gResDaySnapshot = new GlobalReservationDaySnapshot({
       //   id: gResDaySnapshotID,
       //   timestamp: args.timestamp,
-      //   investmentDay: gResDay.investmentDay,
+      //   investmentMode: gResDay.investmentMode,
       //   effectiveWei: gResDay.effectiveWei,
       //   actualWei: gResDay.actualWei,
       //   reservationCount: gResDay.reservationCount,
       // });
       // await GlobalReservationDaySnapshot.create(gResDaySnapshot);
 
-      // let uResDayID = userID + "-" + reservation.investmentDay;
+      // let uResDayID = userID + "-" + reservation.investmentMode;
       // let uResDay = await UserReservationDay.findOne({ id: uResDayID });
       // if (uResDay == null) {
       //   uResDay = new UserReservationDay({
       //     id: uResDayID,
       //     user: user.id,
-      //     investmentDay: reservation.investmentDay,
+      //     investmentMode: reservation.investmentMode,
       //     effectiveWei: ZERO,
       //     actualWei: ZERO,
       //     reservationCount: ZERO,
       //   });
       //   await UserReservationDay.create(uResDay);
       //   gResDay.userCount = (
-      //     BigInt(gResDay.userCount) + BigInt(ONE)
+      //     new bigdecimal.BigDecimal(gResDay.userCount).add(new bigdecimal.BigDecimal(ONE))
       //   ).toString();
       //   user.reservationDayCount = (
-      //     BigInt(user.reservationDayCount) + BigInt(ONE)
+      //     new bigdecimal.BigDecimal(user.reservationDayCount).add(new bigdecimal.BigDecimal(ONE))
       //   ).toString();
       // }
       // uResDay.effectiveWei = (
-      //   BigInt(uResDay.effectiveWei) + BigInt(reservation.effectiveWei)
+      //   new bigdecimal.BigDecimal(uResDay.effectiveWei).add(new bigdecimal.BigDecimal(reservation.effectiveWei))
       // ).toString();
       // uResDay.actualWei = (
-      //   BigInt(uResDay.actualWei) + BigInt(reservation.effectiveWei)
+      //   new bigdecimal.BigDecimal(uResDay.actualWei).add(new bigdecimal.BigDecimal(reservation.effectiveWei))
       // ).toString();
       // uResDay.reservationCount = (
-      //   BigInt(uResDay.reservationCount) + BigInt(ONE)
+      //   new bigdecimal.BigDecimal(uResDay.reservationCount).add(new bigdecimal.BigDecimal(ONE))
       // ).toString();
 
       // await uResDay.save();
@@ -708,7 +709,7 @@ const handleDepositedLiquidity = {
         });
       } else {
         scsprliquidityresult.amount = (
-          BigInt(scsprliquidityresult.amount) + BigInt(args.amount)
+          new bigdecimal.BigDecimal(scsprliquidityresult.amount).add(new bigdecimal.BigDecimal(args.amount))
         ).toString();
       }
 
@@ -772,7 +773,7 @@ const handleWithdrawal = {
       });
       if (scsprliquidityresult != null) {
         scsprliquidityresult.amount = (
-          BigInt(scsprliquidityresult.amount) - BigInt(args.amount)
+          new bigdecimal.BigDecimal(scsprliquidityresult.amount).subtract(new bigdecimal.BigDecimal(args.amount))
         ).toString();
       }
       else{
@@ -859,10 +860,10 @@ const handleFormedLiquidity = {
         formedliquidityresult.liquidity = args.liquidity;
         formedliquidityresult.coverAmount = args.coverAmount;
         formedliquidityresult.amountTokenA = (
-          BigInt(formedliquidityresult.amountTokenA) + BigInt(args.amountTokenA)
+          new bigdecimal.BigDecimal(formedliquidityresult.amountTokenA).add(new bigdecimal.BigDecimal(args.amountTokenA))
         ).toString();
         formedliquidityresult.amountTokenB = (
-          BigInt(formedliquidityresult.amountTokenB) + BigInt(args.amountTokenB)
+          new bigdecimal.BigDecimal(formedliquidityresult.amountTokenB).add(new bigdecimal.BigDecimal(args.amountTokenB))
         ).toString();
       }
 
@@ -941,10 +942,10 @@ const handleLiquidityAdded = {
       } else {
         uniswapswapresult.liquidity = args.liquidity;
         uniswapswapresult.amountTokenA = (
-          BigInt(uniswapswapresult.amountTokenA) + BigInt(args.amountWcspr)
+          new bigdecimal.BigDecimal(uniswapswapresult.amountTokenA).add(new bigdecimal.BigDecimal(args.amountWcspr))
         ).toString();
         uniswapswapresult.amountTokenB = (
-          BigInt(uniswapswapresult.amountTokenB) + BigInt(args.amountScspr)
+          new bigdecimal.BigDecimal(uniswapswapresult.amountTokenB).add(new bigdecimal.BigDecimal(args.amountScspr))
         ).toString();
       }
 
@@ -1006,10 +1007,10 @@ const handleLiquidityRemoved = {
 
       if (uniswapswapresult != null) {
         uniswapswapresult.amountTokenA = (
-          BigInt(uniswapswapresult.amountTokenA) - BigInt(args.amountWcspr)
+          new bigdecimal.BigDecimal(uniswapswapresult.amountTokenA).subtract(new bigdecimal.BigDecimal(args.amountWcspr))
         ).toString();
         uniswapswapresult.amountTokenB = (
-          BigInt(uniswapswapresult.amountTokenB) - BigInt(args.amountScspr)
+          new bigdecimal.BigDecimal(uniswapswapresult.amountTokenB).subtract(new bigdecimal.BigDecimal(args.amountScspr))
         ).toString();
       }
       else
