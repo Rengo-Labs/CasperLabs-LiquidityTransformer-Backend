@@ -9,6 +9,7 @@ const User = require("../models/user");
 const UniswapReserves = require("../models/uniswapReserves");
 const LiquidityGuardStatus = require("../models/liquidityGuardStatus");
 let eventsData = require("../models/eventsData");
+var bigdecimal = require("bigdecimal");
 
 const Response = require("../models/response");
 const { responseType } = require("./types/response");
@@ -34,11 +35,12 @@ const handleGiveStatus = {
         referrer.cmStatusInLaunch = true;
 
         global = await getOrCreateGlobal();
+        
         global.cmStatusCount = (
-          BigInt(global.cmStatusCount) + BigInt(ONE)
+          new bigdecimal.BigDecimal(global.cmStatusCount).add(new bigdecimal.BigDecimal(ONE))
         ).toString();
         global.cmStatusInLaunchCount = (
-          BigInt(global.cmStatusInLaunchCount) + BigInt(ONE)
+          new bigdecimal.BigDecimal(global.cmStatusInLaunchCount).add(new bigdecimal.BigDecimal(ONE))
         ).toString();
       }
       
@@ -102,31 +104,31 @@ const handleStakeStart = {
   async resolve(parent, args, context) {
     try {
       let global = await getOrCreateGlobal();
-      global.stakeCount = (BigInt(global.stakeCount) + BigInt(ONE)).toString();
+      global.stakeCount = (new bigdecimal.BigDecimal(global.stakeCount).add(new bigdecimal.BigDecimal(ONE))).toString();
 
       let stakerID = args.stakerAddress;
       let staker = await User.findOne({ id: stakerID });
 
       if (staker == null) {
         staker = await createUser(stakerID);
-        global.userCount = (BigInt(global.userCount) + BigInt(ONE)).toString();
+        global.userCount = (new bigdecimal.BigDecimal(global.userCount).add(new bigdecimal.BigDecimal(ONE))).toString();
         global.stakerCount = (
-          BigInt(global.stakerCount) + BigInt(ONE)
+          new bigdecimal.BigDecimal(global.stakerCount).add(new bigdecimal.BigDecimal(ONE))
         ).toString();
       }
-      staker.stakeCount = (BigInt(staker.stakeCount) + BigInt(ONE)).toString();
+      staker.stakeCount = (new bigdecimal.BigDecimal(staker.stakeCount).add(new bigdecimal.BigDecimal(ONE))).toString();
 
       let referrerID = args.referralAddress;
       let referrer = await User.findOne({ id: referrerID });
 
       if (referrer == null) {
         referrer = await createUser(referrerID);
-        global.userCount = (BigInt(global.userCount) + BigInt(ONE)).toString();
+        global.userCount = (new bigdecimal.BigDecimal(global.userCount).add(new bigdecimal.BigDecimal(ONE))).toString();
       }
-      if (BigInt(args.referralShares) > BigInt(ZERO)) {
+      if (new bigdecimal.BigDecimal(args.referralShares).compareTo(new bigdecimal.BigDecimal(ZERO)) == 1) {
         if (referrer.cmStatus === false) {
           global.cmStatusCount = (
-            BigInt(global.cmStatusCount) + BigInt(ONE)
+            new bigdecimal.BigDecimal(global.cmStatusCount).add(new bigdecimal.BigDecimal(ONE))
           ).toString();
         }
         referrer.cmStatus = true;
@@ -263,19 +265,19 @@ const handleInterestScraped = {
   async resolve(parent, args, context) {
     try {
       let stake = await Stake.findOne({ id: args.stakeID });
-      stake.scrapeCount = (BigInt(stake.scrapeCount) + BigInt(ONE)).toString();
+      stake.scrapeCount = (new bigdecimal.BigDecimal(stake.scrapeCount).add(new bigdecimal.BigDecimal(ONE))).toString();
       stake.lastScrapeDay = args.scrapeDay;
       stake.scrapedYodas = (
-        BigInt(stake.scrapedYodas) + BigInt(args.scrapeAmount)
+        new bigdecimal.BigDecimal(stake.scrapedYodas).add(new bigdecimal.BigDecimal(args.scrapeAmount))
       ).toString();
       stake.currentShares = (
-        BigInt(stake.currentShares) - BigInt(args.stakersPenalty)
+        new bigdecimal.BigDecimal(stake.currentShares).subtract(new bigdecimal.BigDecimal(args.stakersPenalty))
       ).toString();
       stake.sharesPenalized = (
-        BigInt(stake.sharesPenalized) + BigInt(args.stakersPenalty)
+        new bigdecimal.BigDecimal(stake.sharesPenalized).add(new bigdecimal.BigDecimal(args.stakersPenalty))
       ).toString();
       stake.referrerSharesPenalized = (
-        BigInt(stake.referrerSharesPenalized) + BigInt(args.referrerPenalty)
+        new bigdecimal.BigDecimal(stake.referrerSharesPenalized).add(new bigdecimal.BigDecimal(args.referrerPenalty))
       ).toString();
 
       // updating mutation status
@@ -341,13 +343,13 @@ const handleNewGlobals = {
       global.circulatingSupply = (await WiseTokenContract.getTotalSupply(args.wiseAddress)).toString();
 
       global.liquidSupply = (
-        BigInt(global.circulatingSupply) - BigInt(global.ownerlessSupply)
+        new bigdecimal.BigDecimal(global.circulatingSupply).subtract(new bigdecimal.BigDecimal(global.ownerlessSupply))
       ).toString();
       global.mintedSupply = (
-        BigInt(global.circulatingSupply) + BigInt(global.totalStaked)
+        new bigdecimal.BigDecimal(global.circulatingSupply).add(new bigdecimal.BigDecimal(global.totalStaked))
       ).toString();
       global.ownedSupply = (
-        BigInt(global.liquidSupply) + BigInt(global.totalStaked)
+        new bigdecimal.BigDecimal(global.liquidSupply).add(new bigdecimal.BigDecimal(global.totalStaked))
       ).toString();
 
       // updating mutation status
