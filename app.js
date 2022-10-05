@@ -22,6 +22,7 @@ const uniswapSwapResultRoute = require("./routes/uniswapSwapResultRoutes");
 const stakeRoute = require("./routes/stakeRoute");
 const globalRoutes = require("./routes/globalRoutes");
 const userRoutes = require("./routes/userRoute");
+var readWasmRouter = require("./routes/readWasm");
 
 var eventsDataModel = require("./models/eventsData");
 
@@ -79,6 +80,7 @@ app.use("/", uniswapSwapResultRoute);
 app.use("/", stakeRoute);
 app.use("/", globalRoutes);
 app.use("/", userRoutes);
+app.use("/", readWasmRouter);
 
 app.use(
   "/graphql",
