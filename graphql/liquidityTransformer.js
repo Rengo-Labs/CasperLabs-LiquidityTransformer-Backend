@@ -26,6 +26,7 @@ const MasterRecord = require("../models/MasterRecord");
 const Response = require("../models/response");
 let eventsData = require("../models/eventsData");
 var bigdecimal = require("bigdecimal");
+var halfUp = bigdecimal.RoundingMode.HALF_UP();
 
 const { responseType } = require("./types/response");
 
@@ -41,7 +42,7 @@ let MIN_SUPPLY_5 = csprVal(2500000);
 let MIN_SUPPLY_6 = csprVal(1);
 
 function getMinSupply(day) {
-  let dayVal = day / new bigdecimal.BigDecimal(1000000000);
+  let dayVal = day.divide(new bigdecimal.BigDecimal(1000000000),18,halfUp);
   switch (dayVal) {
     case new bigdecimal.BigDecimal(8):
     case new bigdecimal.BigDecimal(10):
@@ -141,7 +142,7 @@ const handleReferralAdded = {
       }
 
       let reservedEffectiveEth =
-        (new bigdecimal.BigDecimal(args.amount).multiply(new bigdecimal.BigDecimal(11))).divide(new bigdecimal.BigDecimal(10));
+        (new bigdecimal.BigDecimal(args.amount).multiply(new bigdecimal.BigDecimal(11))).divide(new bigdecimal.BigDecimal(10),18,halfUp);
       referee.reservationActualWei = (
         new bigdecimal.BigDecimal(referee.reservationActualWei).add(
         new bigdecimal.BigDecimal(args.amount)).subtract(
@@ -207,7 +208,7 @@ const handleReferralAdded = {
         }
       }
       let nRes = new bigdecimal.BigDecimal(resList.length);
-      let dayActualWei = new bigdecimal.BigDecimal(referral.actualWei).divide(nRes);
+      let dayActualWei = new bigdecimal.BigDecimal(referral.actualWei).divide(nRes,18,halfUp);
       let remainder = new bigdecimal.BigDecimal(referral.actualWei) % (nRes);
       for (let i = 0; i < resList.length; i++) {
         let actualWei = i === 0 ? dayActualWei + remainder : dayActualWei;
