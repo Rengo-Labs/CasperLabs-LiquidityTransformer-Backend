@@ -13,7 +13,7 @@ const globalReservationDayType = new GraphQLObjectType({
     id: {
       type: GraphQLString,
     },
-    investmentDay: {
+    currentWiseDay: {
       type: GraphQLString,
     },
     supply: {

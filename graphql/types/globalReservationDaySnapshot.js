@@ -16,7 +16,7 @@ const globalReservationDaySnapshotType = new GraphQLObjectType({
     timestamp: {
       type: GraphQLString,
     },
-    investmentDay: {
+    currentWiseDay: {
       type: GraphQLString,
     },
     effectiveWei: {

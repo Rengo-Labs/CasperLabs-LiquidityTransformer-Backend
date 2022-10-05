@@ -33,7 +33,7 @@ const { responseType } = require("./types/response");
 let CM_REFERRER_THRESHOLD = csprVal(50);
 
 let NORMAL_SUPPLY = csprVal(5000000);
-let MAX_SUPPLY = NORMAL_SUPPLY + NORMAL_SUPPLY;
+let MAX_SUPPLY = NORMAL_SUPPLY.add(NORMAL_SUPPLY);
 let MIN_SUPPLY_1 = csprVal(4500000);
 let MIN_SUPPLY_2 = csprVal(4000000);
 let MIN_SUPPLY_3 = csprVal(3500000);
@@ -42,36 +42,37 @@ let MIN_SUPPLY_5 = csprVal(2500000);
 let MIN_SUPPLY_6 = csprVal(1);
 
 function getMinSupply(day) {
-  let dayVal = day.divide(new bigdecimal.BigDecimal(1000000000),18,halfUp);
+  let dayVal = day;
+
   switch (dayVal) {
-    case new bigdecimal.BigDecimal(8):
-    case new bigdecimal.BigDecimal(10):
+    case 8:
+    case 10:
       return MIN_SUPPLY_1;
-    case new bigdecimal.BigDecimal(14):
-    case new bigdecimal.BigDecimal(16):
-    case new bigdecimal.BigDecimal(17):
+    case 14:
+    case 16:
+    case 17:
       return MIN_SUPPLY_2;
-    case new bigdecimal.BigDecimal(21):
-    case new bigdecimal.BigDecimal(23):
-    case new bigdecimal.BigDecimal(25):
+    case 21:
+    case 23:
+    case 25:
       return MIN_SUPPLY_3;
-    case new bigdecimal.BigDecimal(29):
-    case new bigdecimal.BigDecimal(31):
+    case 29:
+    case 31:
       return MIN_SUPPLY_4;
-    case new bigdecimal.BigDecimal(35):
-    case new bigdecimal.BigDecimal(36):
-    case new bigdecimal.BigDecimal(38):
+    case 35:
+    case 36:
+    case 38:
       return MIN_SUPPLY_5;
-    case new bigdecimal.BigDecimal(12):
-    case new bigdecimal.BigDecimal(19):
-    case new bigdecimal.BigDecimal(26):
-    case new bigdecimal.BigDecimal(33):
-    case new bigdecimal.BigDecimal(40):
-    case new bigdecimal.BigDecimal(42):
-    case new bigdecimal.BigDecimal(44):
-    case new bigdecimal.BigDecimal(46):
-    case new bigdecimal.BigDecimal(47):
-    case new bigdecimal.BigDecimal(48):
+    case 12:
+    case 19:
+    case 26:
+    case 33:
+    case 40:
+    case 42:
+    case 44:
+    case 46:
+    case 47:
+    case 48:
       return MIN_SUPPLY_6;
     default:
       return NORMAL_SUPPLY;
@@ -325,7 +326,7 @@ const handleWiseReservation = {
         ).toString();
       }
 
-      let reservationID = args.deployHash + "-" + args.investmentMode;
+      let reservationID = args.deployHash + "-" + args.currentWiseDay;
       let reservation = new Reservation({
         id: reservationID,
         transaction: transaction.id,
@@ -337,6 +338,7 @@ const handleWiseReservation = {
         scsprContributed: args.amount,
         transferTokens: args.amount,
         currentWiseDay: args.currentWiseDay,
+        referral: null
       });
 
       user.reservationCount = (
@@ -371,78 +373,72 @@ const handleWiseReservation = {
         new bigdecimal.BigDecimal(global.totalTransferTokens).add(new bigdecimal.BigDecimal(args.tokens))
       ).toString();
 
-      // let gResDayID = reservation.investmentMode;
-      // let gResDay = await GlobalReservationDay.findOne({ id: gResDayID });
-      // if (gResDay == null) {
-      //   gResDay = new GlobalReservationDay({
-      //     id: gResDayID,
-      //     investmentMode: reservation.investmentMode,
-      //     minSupply: getMinSupply(new bigdecimal.BigDecimal(reservation.investmentMode)).toString(),
-      //     maxSupply: (
-      //       MAX_SUPPLY - getMinSupply(new bigdecimal.BigDecimal(reservation.investmentMode))
-      //     ).toString(),
-      //     effectiveWei: ZERO,
-      //     actualWei: ZERO,
-      //     reservationCount: ZERO,
-      //     userCount: ZERO,
-      //   });
-      //   await GlobalReservationDay.create(gResDay);
-      // }
-      // gResDay.effectiveWei = (
-      //   new bigdecimal.BigDecimal(gResDay.effectiveWei).add( new bigdecimal.BigDecimal(reservation.effectiveWei))
-      // ).toString();
-      // gResDay.actualWei = (
-      //   new bigdecimal.BigDecimal(gResDay.actualWei).add(new bigdecimal.BigDecimal(reservation.effectiveWei))
-      // ).toString();
-      // gResDay.reservationCount = (
-      //   new bigdecimal.BigDecimal(gResDay.reservationCount).add(new bigdecimal.BigDecimal(ONE))
-      // ).toString();
+      let gResDayID = reservation.currentWiseDay;
+      let gResDay = await GlobalReservationDay.findOne({ id: gResDayID });
+      if (gResDay == null) {
+        gResDay = new GlobalReservationDay({
+          id: gResDayID,
+          currentWiseDay: reservation.currentWiseDay,
+          minSupply: getMinSupply(parseInt(reservation.currentWiseDay)).toString(),
+          maxSupply: (
+            MAX_SUPPLY.subtract(getMinSupply(parseInt(reservation.currentWiseDay)))
+          ).toString(),
+          effectiveWei: ZERO,
+          actualWei: ZERO,
+          reservationCount: ZERO,
+          userCount: ZERO,
+        });
+      }
+      gResDay.effectiveWei = (
+        new bigdecimal.BigDecimal(gResDay.effectiveWei).add( new bigdecimal.BigDecimal(reservation.effectiveWei))
+      ).toString();
+      gResDay.actualWei = (
+        new bigdecimal.BigDecimal(gResDay.actualWei).add(new bigdecimal.BigDecimal(reservation.effectiveWei))
+      ).toString();
+      gResDay.reservationCount = (
+        new bigdecimal.BigDecimal(gResDay.reservationCount).add(new bigdecimal.BigDecimal(ONE))
+      ).toString();
 
-      // let gResDaySnapshotID = reservation.investmentMode + "-" + args.timestamp;
-      // let gResDaySnapshot = new GlobalReservationDaySnapshot({
-      //   id: gResDaySnapshotID,
-      //   timestamp: args.timestamp,
-      //   investmentMode: gResDay.investmentMode,
-      //   effectiveWei: gResDay.effectiveWei,
-      //   actualWei: gResDay.actualWei,
-      //   reservationCount: gResDay.reservationCount,
-      // });
-      // await GlobalReservationDaySnapshot.create(gResDaySnapshot);
+      let gResDaySnapshotID = reservation.currentWiseDay + "-" + args.timestamp;
+      let gResDaySnapshot = new GlobalReservationDaySnapshot({
+        id: gResDaySnapshotID,
+        timestamp: args.timestamp,
+        currentWiseDay: gResDay.currentWiseDay,
+        effectiveWei: gResDay.effectiveWei,
+        actualWei: gResDay.actualWei,
+        reservationCount: gResDay.reservationCount,
+      });
 
-      // let uResDayID = userID + "-" + reservation.investmentMode;
-      // let uResDay = await UserReservationDay.findOne({ id: uResDayID });
-      // if (uResDay == null) {
-      //   uResDay = new UserReservationDay({
-      //     id: uResDayID,
-      //     user: user.id,
-      //     investmentMode: reservation.investmentMode,
-      //     effectiveWei: ZERO,
-      //     actualWei: ZERO,
-      //     reservationCount: ZERO,
-      //   });
-      //   await UserReservationDay.create(uResDay);
-      //   gResDay.userCount = (
-      //     new bigdecimal.BigDecimal(gResDay.userCount).add(new bigdecimal.BigDecimal(ONE))
-      //   ).toString();
-      //   user.reservationDayCount = (
-      //     new bigdecimal.BigDecimal(user.reservationDayCount).add(new bigdecimal.BigDecimal(ONE))
-      //   ).toString();
-      // }
-      // uResDay.effectiveWei = (
-      //   new bigdecimal.BigDecimal(uResDay.effectiveWei).add(new bigdecimal.BigDecimal(reservation.effectiveWei))
-      // ).toString();
-      // uResDay.actualWei = (
-      //   new bigdecimal.BigDecimal(uResDay.actualWei).add(new bigdecimal.BigDecimal(reservation.effectiveWei))
-      // ).toString();
-      // uResDay.reservationCount = (
-      //   new bigdecimal.BigDecimal(uResDay.reservationCount).add(new bigdecimal.BigDecimal(ONE))
-      // ).toString();
+      let uResDayID = userID + "-" + reservation.currentWiseDay;
+      let uResDay = await UserReservationDay.findOne({ id: uResDayID });
+      if (uResDay == null) {
+        uResDay = new UserReservationDay({
+          id: uResDayID,
+          user: user.id,
+          currentWiseDay: reservation.currentWiseDay,
+          effectiveWei: ZERO,
+          actualWei: ZERO,
+          reservationCount: ZERO,
+        });
+    
+        gResDay.userCount = (
+          new bigdecimal.BigDecimal(gResDay.userCount).add(new bigdecimal.BigDecimal(ONE))
+        ).toString();
+        user.reservationDayCount = (
+          new bigdecimal.BigDecimal(user.reservationDayCount).add(new bigdecimal.BigDecimal(ONE))
+        ).toString();
+      }
+      uResDay.effectiveWei = (
+        new bigdecimal.BigDecimal(uResDay.effectiveWei).add(new bigdecimal.BigDecimal(reservation.effectiveWei))
+      ).toString();
+      uResDay.actualWei = (
+        new bigdecimal.BigDecimal(uResDay.actualWei).add(new bigdecimal.BigDecimal(reservation.effectiveWei))
+      ).toString();
+      uResDay.reservationCount = (
+        new bigdecimal.BigDecimal(uResDay.reservationCount).add(new bigdecimal.BigDecimal(ONE))
+      ).toString();
 
-      // await uResDay.save();
-      // await gResDay.save();
-
-      // gResDaySnapshot.userCount = gResDay.userCount;
-      // await gResDaySnapshot.save();
+      gResDaySnapshot.userCount = gResDay.userCount;
 
       // updating mutation status
       let eventDataResult = await eventsData.findOne({
@@ -466,6 +462,9 @@ const handleWiseReservation = {
           await transaction.save({ session });
           await user.save({ session });
           await reservation.save({ session });
+          await uResDay.save();
+          await gResDay.save();
+          await gResDaySnapshot.save();
           await eventDataResult.save({ session });
           await response.save({ session });
 

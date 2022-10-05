@@ -16,7 +16,7 @@ const userReservationDayType = new GraphQLObjectType({
     user: {
       type: GraphQLString,
     },
-    investmentDay: {
+    currentWiseDay: {
       type: GraphQLString,
     },
     effectiveWei: {
