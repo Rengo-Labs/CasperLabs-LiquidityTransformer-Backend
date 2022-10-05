@@ -8,7 +8,7 @@ const userReservationDaySchema = new Schema({
   user: {
     type: String,
   },
-  investmentDay: {
+  currentWiseDay: {
     type: String,
   },
   effectiveWei: {

@@ -5,7 +5,7 @@ const globalReservationDaySchema = new Schema({
   id: {
     type: String,
   },
-  investmentDay: {
+  currentWiseDay: {
     type: String,
   },
   supply: {

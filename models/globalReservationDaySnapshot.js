@@ -8,7 +8,7 @@ const globalReservationDaySnapshotSchema = new Schema({
   timestamp: {
     type: String,
   },
-  investmentDay: {
+  currentWiseDay: {
     type: String,
   },
   effectiveWei: {

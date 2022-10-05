@@ -609,14 +609,14 @@ async function startTests() {
   );
   await NewSharePrice("10000000000000", "100000000000");
   await WiseReservation(
-    "123",
-    "123",
-    "123",
-    "123",
-    "15000000000",
-    "10000000000",
-    "13",
-    "15"
+    "d12bf0d06dc3a3a724fcf8f95495cdc9ccd8563e7a68c361eefb39c4d59b8911",
+    "7e353698ce0e6419c2add0cc0559605a4fd1dac46a6b71721e95e80dc1bb4616",
+    "1664964323000",
+    "24a56544c522eca7fba93fb7a6cef83e086706fd87b2f344f5c3dad3603d11f1",
+    "1000000000",
+    "1320000000000",
+    "8",
+    "1"
   );
   await RefundIssued("123", "10000000000", "123");
   await CashBackIssued(
