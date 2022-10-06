@@ -80,19 +80,19 @@ const test = async () => {
 
 	console.log("Liquidity Transformer contract Hash: ",LIQUIDITYTRANSFORMER_CONTRACT_HASH!);
 
-	//first mint tokens in wise contract
-	//reserve_wise
-	const _reserve_Wise = await liquidity.reserve_Wise(
-		KEYS,
-		INVESTMENT_MODE!,
-		MSG_VALUE!,
-		CALLER_PURSE!,
-		RESERVE_WISE_PAYMENT_AMOUNT!
-	);
-	console.log("... _reserve_Wise deploy hash: ", _reserve_Wise);
+	// //first mint tokens in wise contract
+	// //reserve_wise
+	// const _reserve_Wise = await liquidity.reserve_Wise(
+	// 	KEYS,
+	// 	INVESTMENT_MODE!,
+	// 	MSG_VALUE!,
+	// 	CALLER_PURSE!,
+	// 	RESERVE_WISE_PAYMENT_AMOUNT!
+	// );
+	// console.log("... _reserve_Wise deploy hash: ", _reserve_Wise);
 
-	await getDeploy(NODE_ADDRESS!, _reserve_Wise);
-	console.log("... _reserve_Wise called successfully");
+	// await getDeploy(NODE_ADDRESS!, _reserve_Wise);
+	// console.log("... _reserve_Wise called successfully");
 
 	//call mint and approve in erc20 first
 	//reserve_wise_with_token
@@ -108,16 +108,16 @@ const test = async () => {
 	// await getDeploy(NODE_ADDRESS!, reserveWiseWithToken);
 	// console.log("... reserveWiseWithToken called successfully");
 
-	//requestRefund
-	const requestRefund = await liquidity.requestRefund(
-		KEYS,
-	 CALLER_PURSE!,
-		RESERVE_WISE_PAYMENT_AMOUNT!
-	);
-	console.log(`... requestRefund deploy hash: ${requestRefund}`);
+	// //requestRefund
+	// const requestRefund = await liquidity.requestRefund(
+	// 	KEYS,
+	//  CALLER_PURSE!,
+	// 	RESERVE_WISE_PAYMENT_AMOUNT!
+	// );
+	// console.log(`... requestRefund deploy hash: ${requestRefund}`);
 
-	await getDeploy(NODE_ADDRESS!, requestRefund);
-	console.log("... requestRefund called successfully");
+	// await getDeploy(NODE_ADDRESS!, requestRefund);
+	// console.log("... requestRefund called successfully");
 
 	// call set_liquidity_transfomer
 	// call set_wise
@@ -171,8 +171,8 @@ const test = async () => {
 	// const preparePath = await liquidity.preparePath(KEYS.publicKey);
 	// console.log(`... Contract allpairs: ${preparePath}`);
 
-	//const currentWiseDay = await liquidity.currentWiseDay();
-	//console.log(`... currentWiseDay : ${currentWiseDay}`);
+	const currentWiseDay = await liquidity.currentWiseDay();
+	console.log(`... currentWiseDay : ${currentWiseDay}`);
 
 };
 

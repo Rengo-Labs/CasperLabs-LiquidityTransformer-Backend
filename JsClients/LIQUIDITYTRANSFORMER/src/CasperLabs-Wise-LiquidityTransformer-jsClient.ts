@@ -373,11 +373,11 @@ class LIQUIDITYClient {
 		const result = await utils.contractDictionaryGetter(
 			this.nodeAddress,
 			this.contractHash,
-			"current_wise_day"
+			"current_stakeable_day"
 		);
 		return result.value().toString();
 	}
-
+	
 	public async requestRefund(
 		keys: Keys.AsymmetricKey,
 		succesorPurse: string,
