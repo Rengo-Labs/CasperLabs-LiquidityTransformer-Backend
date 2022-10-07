@@ -3,6 +3,19 @@ const express = require("express");
 const router = express.Router();
 var wise = require("../JsClients/WISETOKEN/wiseTokenFunctionsForBackend/functions");
 const {utils} =require("../JsClients/LIQUIDITYTRANSFORMER/src");
+const sdk = require('casper-js-sdk');
+const { CasperServiceByJsonRPC } = sdk;
+const cc = new CasperServiceByJsonRPC(process.env.NODE_ADDRESS);
+
+const fetchUrefValue = async (uref) => {
+  const stateRootHash = await cc.getStateRootHash();
+
+  const value = await cc.getBlockState(
+    stateRootHash, 
+    uref
+  );
+  return value;
+}
 
 router.route("/wiseBalanceAgainstUser").post(async function (req, res, next) {
   try {
@@ -78,19 +91,19 @@ router.route("/queryKeyData").post(async function (req, res, next) {
     }
 
     let accountInfo = await utils.getAccountInfoForBackend(process.env.NODE_ADDRESS, req.body.user);
-    console.log(`... Account Info: `);
-	  console.log(JSON.stringify(accountInfo, null, 2));
 
     const data = await utils.getAccountNamedKeyValue(
       accountInfo,
       req.body.keyToQuery
     );
-    console.log(`... data : ${data}`);
-
+    
+    let urefValue= await fetchUrefValue(data);
+    console.log("urefValue: ",urefValue);
+    
     return res.status(200).json({
       success: true,
-      message: req.body.keyToQuery+" key data has been queried...",
-      Data:data,
+      message: req.body.keyToQuery+" key data has been fetched...",
+      Data:urefValue.CLValue,
     });
   } catch (error) {
     console.log("error (try-catch) : " + error);
