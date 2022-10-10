@@ -11,21 +11,27 @@ function splitdata(data) {
 }
 
 router
-  .route("/getContractHashAgainstPackageHash")
-  .post(async function (req, res, next) {
+  .route("/getContractHashAgainstPackageHash/:packageHash")
+  .get(async function (req, res, next) {
     try {
-      if (!req.body.packageHash) {
+      if (!req.params.packageHash) {
         return res.status(400).json({
           success: false,
-          message: "There is no packageHash specified in the req body.",
+          message: "There is no packageHash specified in the req params.",
         });
       }
 
-      let packageHash = req.body.packageHash.toLowerCase();
+      let packageHash = req.params.packageHash.toLowerCase();
       let contractHash = await allcontractsDataModel.findOne({
         packageHash: packageHash,
       });
-
+      if(contractHash == null)
+      {
+        return res.status(400).json({
+          success: false,
+          message: "This packageHash does not exists in the database..."
+        });
+      }
       return res.status(200).json({
         success: true,
         message: "Contract Hash has been Succefully found.",

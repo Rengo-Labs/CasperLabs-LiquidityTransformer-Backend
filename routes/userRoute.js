@@ -17,23 +17,23 @@ const fetchUrefValue = async (uref) => {
   return value;
 }
 
-router.route("/wiseBalanceAgainstUser").post(async function (req, res, next) {
+router.route("/wiseBalanceAgainstUser/:contractHash/:user").get(async function (req, res, next) {
   try {
-    if (!req.body.contractHash) {
+    if (!req.params.contractHash) {
       return res.status(400).json({
         success: false,
-        message: "contractHash not found in request body",
+        message: "contractHash not found in request params",
       });
     }
 
-    if (!req.body.user) {
+    if (!req.params.user) {
       return res.status(400).json({
         success: false,
-        message: "user not found in request body",
+        message: "user not found in request params",
       });
     }
 
-    let balance = await wise.balanceOf(req.body.contractHash, req.body.user);
+    let balance = await wise.balanceOf(req.params.contractHash, req.params.user);
     return res.status(200).json({
       success: true,
       message: "Balance has been found against this user.",
@@ -48,16 +48,16 @@ router.route("/wiseBalanceAgainstUser").post(async function (req, res, next) {
   }
 });
 
-router.route("/queryUserKeys").post(async function (req, res, next) {
+router.route("/queryUserKeys/:user").get(async function (req, res, next) {
   try {
-    if (!req.body.user) {
+    if (!req.params.user) {
       return res.status(400).json({
         success: false,
-        message: "user not found in request body",
+        message: "user not found in request params",
       });
     }
 
-    let accountInfo = await utils.getAccountInfoForBackend(process.env.NODE_ADDRESS, req.body.user);
+    let accountInfo = await utils.getAccountInfoForBackend(process.env.NODE_ADDRESS, req.params.user);
     console.log(`... Account Info: `);
 	  console.log(JSON.stringify(accountInfo, null, 2));
 
@@ -75,26 +75,26 @@ router.route("/queryUserKeys").post(async function (req, res, next) {
   }
 });
 
-router.route("/queryKeyData").post(async function (req, res, next) {
+router.route("/queryKeyData/:user/:keyToQuery").get(async function (req, res, next) {
   try {
-    if (!req.body.user) {
+    if (!req.params.user) {
       return res.status(400).json({
         success: false,
-        message: "user not found in request body",
+        message: "user not found in request params",
       });
     }
-    if (!req.body.keyToQuery) {
+    if (!req.params.keyToQuery) {
       return res.status(400).json({
         success: false,
-        message: "keyToQuery not found in request body",
+        message: "keyToQuery not found in request params",
       });
     }
 
-    let accountInfo = await utils.getAccountInfoForBackend(process.env.NODE_ADDRESS, req.body.user);
+    let accountInfo = await utils.getAccountInfoForBackend(process.env.NODE_ADDRESS, req.params.user);
 
     const data = await utils.getAccountNamedKeyValue(
       accountInfo,
-      req.body.keyToQuery
+      req.params.keyToQuery
     );
     
     let urefValue= await fetchUrefValue(data);
@@ -102,7 +102,7 @@ router.route("/queryKeyData").post(async function (req, res, next) {
     
     return res.status(200).json({
       success: true,
-      message: req.body.keyToQuery+" key data has been fetched...",
+      message: req.params.keyToQuery+" key data has been fetched...",
       Data:urefValue.CLValue,
     });
   } catch (error) {

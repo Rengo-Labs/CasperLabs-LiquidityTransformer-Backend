@@ -2,16 +2,16 @@ const express = require("express");
 const router = express.Router();
 const userReservationDayModel = require('../models/userReservationDay');
 
-router.route("/userReservationDaysData").post(async function (req, res, next) {
+router.route("/userReservationDaysData/:user").get(async function (req, res, next) {
   try {
 
-    if (!req.body.user) {
+    if (! req.params.user) {
       return res.status(400).json({
         success: false,
-        message: "user not found in request body",
+        message: "user not found in request params",
       });
     }
-    let userReservationDaysData =await userReservationDayModel.find({user:req.body.user});
+    let userReservationDaysData =await userReservationDayModel.find({user: req.params.user});
     if(userReservationDaysData.length == 0)
     {
         return res.status(400).json({

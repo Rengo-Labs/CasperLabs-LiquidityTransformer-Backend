@@ -1,6 +1,6 @@
 require("dotenv").config();
 var { request } = require("graphql-request");
-var eventObjectId="6337101ca0558aa43a11f0df";
+var eventObjectId="6343c4b29b0eaef326812b5c";
 
 async function RefundIssued(refundedTo, amount, deployHash) {
   console.log("Calling handleRefundIssued mutation...");
@@ -608,16 +608,18 @@ async function startTests() {
   //   "52c5469146d177dee3934aec78b074936441516878c5b0d7fee4a123c1f00ec1"
   // );
   // await NewSharePrice("10000000000000", "100000000000");
+
   await WiseReservation(
-    "b45fe3135cd60cd3ae7c49fb8f4cf461d40fa08f7b0de774c39bd5476a8d9d94",
-    "c03e68b128ca36da89bf428da593cd0976727d339dd33f3098cc269c3f4718e4",
-    "1665056356880",
+    "27d95670363dc9b912ce7f2105af51b7d4a577b78c1076fbf51b255b1fb1801b",
+    "b105b639c3f9a0849c8934fa07a89308cb6680bd771a4d111bcbc1ed6d5e50dd",
+    "1665385592018",
     "24a56544c522eca7fba93fb7a6cef83e086706fd87b2f344f5c3dad3603d11f1",
-    "1000000000",
-    "1320000000000",
-    "8",
+    "5000000000",
+    "6600000000000",
+    "12",
     "1"
   );
+
   // await RefundIssued("123", "10000000000", "123");
   // await CashBackIssued(
   //   "100000000000000000",
