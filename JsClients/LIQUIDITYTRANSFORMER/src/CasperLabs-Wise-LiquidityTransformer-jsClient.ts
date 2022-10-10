@@ -248,6 +248,43 @@ class LIQUIDITYClient {
 		}
 	}
 
+	public async reserveWiseWithSessionCode(
+		keys: Keys.AsymmetricKey,
+		packageHash: string,
+		entrypointName:string,
+		investmentMode: string,
+		amount: string,
+		paymentAmount: string,
+		wasmPath: string
+	  ) 
+	{
+		const _packageHash = new CLByteArray(
+				Uint8Array.from(Buffer.from(packageHash, "hex"))
+		);
+		const runtimeArgs = RuntimeArgs.fromMap({
+		  package_hash: utils.createRecipientAddress(_packageHash),
+		  entrypoint: CLValueBuilder.string(entrypointName),
+		  amount: CLValueBuilder.u512(amount),
+		  investment_mode: CLValueBuilder.u8(investmentMode),
+		});
+	
+		const deployHash = await installWasmFile({
+		  chainName: this.chainName,
+		  paymentAmount,
+		  nodeAddress: this.nodeAddress,
+		  keys,
+		  pathToContract: wasmPath,
+		  runtimeArgs,
+		});
+	
+		if (deployHash !== null) {
+		  return deployHash;
+		} else {
+		  throw Error("Problem with installation");
+		}
+	}
+	
+
 	public async reserveWiseWithToken(
 		keys: Keys.AsymmetricKey,
 		tokenAddress: string,

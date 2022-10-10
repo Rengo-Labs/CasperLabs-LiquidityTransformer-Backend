@@ -11,14 +11,17 @@ const {
 	CHAIN_NAME,
 	LIQUIDITYTRANSFORMER_WASM_PATH,
 	LIQUIDITYTRANSFORMER_MASTER_KEY_PAIR_PATH,
+	LIQUIDITYTRANSFORMER_SessionCode_WASM_PATH,
 	LIQUIDITYTRANSFORMER_INSTALL_PAYMENT_AMOUNT,
+	LIQUIDITYTRANSFORMER_FUNCTIONS_PAYMENT_AMOUNT,
 	LIQUIDITYTRANSFORMER_CONTRACT_NAME,
 	WCSPR_PACKAGE,
 	SYNTHETIC_CSPR_PACKAGE,
 	PAIR_PACKAGE_HASH,
 	ROUTER_ADDRESS,
 	ROUTER_PACKAGE_HASH,
-	WISETOKEN_PACKAGE_HASH
+	WISETOKEN_PACKAGE_HASH,
+	LIQUIDITYTRANSFORMER_PACKAGE_HASH
 } = process.env;
 
 const KEYS = Keys.Ed25519.parseKeyFiles(
@@ -26,12 +29,14 @@ const KEYS = Keys.Ed25519.parseKeyFiles(
 	`${LIQUIDITYTRANSFORMER_MASTER_KEY_PAIR_PATH}/secret_key.pem`
 );
 
+const liquidity = new LIQUIDITYClient(
+	NODE_ADDRESS!,
+	CHAIN_NAME!,
+	EVENT_STREAM_ADDRESS!
+);
+
 const test = async () => {
-	const liquidity = new LIQUIDITYClient(
-		NODE_ADDRESS!,
-		CHAIN_NAME!,
-		EVENT_STREAM_ADDRESS!
-	);
+	
 
 	const installDeployHash = await liquidity.install(
 		KEYS,
@@ -73,3 +78,28 @@ const test = async () => {
 };
 
 //test();
+
+const testReserveWiseWithSessionCode = async () => {
+
+	let entrypointName="reserve_wise";
+	let investmentMode="1";
+	let investmentAmount="1000000000";
+	const installDeployHash = await liquidity.reserveWiseWithSessionCode(
+	  KEYS,
+	  LIQUIDITYTRANSFORMER_PACKAGE_HASH!,
+	  entrypointName,
+	  investmentMode,
+	  investmentAmount,
+	  LIQUIDITYTRANSFORMER_FUNCTIONS_PAYMENT_AMOUNT!,
+	  LIQUIDITYTRANSFORMER_SessionCode_WASM_PATH!
+	);
+  
+	console.log(`... Deposit Function deployHash: ${installDeployHash}`);
+  
+	await getDeploy(NODE_ADDRESS!, installDeployHash);
+  
+	console.log(`... Deposit Function called successfully through sessionCode.`);
+  
+};
+  
+//testReserveWiseWithSessionCode();
