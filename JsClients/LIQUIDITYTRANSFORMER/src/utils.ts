@@ -75,6 +75,16 @@ export const getAccountInfo = async (
   return blockState.Account;
 };
 
+export const getAccountInfoForBackend = async (
+  nodeAddress: string,
+  accountHash: string
+) => {
+  const stateRootHash = await getStateRootHash(nodeAddress);
+  const client = new CasperServiceByJsonRPC(nodeAddress);
+  const blockState = await client.getBlockState(stateRootHash, "account-hash-"+accountHash, []);
+  return blockState.Account;
+};
+
 /**
  * Returns a value under an on-chain account's storage.
  * @param accountInfo - On-chain account's info.

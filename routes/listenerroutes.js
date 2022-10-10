@@ -11,21 +11,27 @@ function splitdata(data) {
 }
 
 router
-  .route("/getContractHashAgainstPackageHash")
-  .post(async function (req, res, next) {
+  .route("/getContractHashAgainstPackageHash/:packageHash")
+  .get(async function (req, res, next) {
     try {
-      if (!req.body.packageHash) {
+      if (!req.params.packageHash) {
         return res.status(400).json({
           success: false,
-          message: "There is no packageHash specified in the req body.",
+          message: "There is no packageHash specified in the req params.",
         });
       }
 
-      let packageHash = req.body.packageHash.toLowerCase();
+      let packageHash = req.params.packageHash.toLowerCase();
       let contractHash = await allcontractsDataModel.findOne({
         packageHash: packageHash,
       });
-
+      if(contractHash == null)
+      {
+        return res.status(400).json({
+          success: false,
+          message: "This packageHash does not exists in the database..."
+        });
+      }
       return res.status(200).json({
         success: true,
         message: "Contract Hash has been Succefully found.",
@@ -76,13 +82,27 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
 
     if (eventName == "refundIssued") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
 
-      var refundedTo = splitdata(newData[2][1].data);
-      var amount = newData[3][1].data;
+      var refundedTo,amount;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+
+        refundedTo = splitdata(newData[2][1]);
+        amount = newData[3][1];
+      }
+      else{
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+
+        refundedTo = splitdata(newData[2][1].data);
+        amount = newData[3][1].data;
+      }
 
       console.log("refundedTo: ", refundedTo);
       console.log("amount: ", amount);
@@ -107,17 +127,36 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true;  
     } else if (eventName == "cashBackIssued") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
-      console.log(newData[4][0].data + " = " + newData[4][1].data);
-      console.log(newData[5][0].data + " = " + newData[5][1].data);
 
-      var totalCashBack = newData[2][1].data;
-      var senderAddress = splitdata(newData[3][1].data);
-      var senderValue = newData[4][1].data;
-      var cashBackAmount = newData[5][1].data;
+      var totalCashBack, senderAddress, senderValue ,cashBackAmount;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+        console.log(newData[4][0] + " = " + newData[4][1]);
+        console.log(newData[5][0] + " = " + newData[5][1]);
+
+        totalCashBack = newData[2][1];
+        senderAddress = splitdata(newData[3][1]);
+        senderValue = newData[4][1];
+        cashBackAmount = newData[5][1];
+      }
+      else{
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+        console.log(newData[4][0].data + " = " + newData[4][1].data);
+        console.log(newData[5][0].data + " = " + newData[5][1].data);
+
+        totalCashBack = newData[2][1].data;
+        senderAddress = splitdata(newData[3][1].data);
+        senderValue = newData[4][1].data;
+        cashBackAmount = newData[5][1].data;
+      }
+      
 
       console.log("totalCashBack: ", totalCashBack);
       console.log("senderAddress: ", senderAddress);
@@ -146,12 +185,24 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true;   
     } else if (eventName == "give_status") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
 
-      var referrerId = splitdata(newData[2][1].data);
+      var referrerId;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
 
+        referrerId = splitdata(newData[2][1]);
+      }
+      else{
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+
+        referrerId = splitdata(newData[2][1].data);
+      }
+     
       console.log("referrerId: ", referrerId);
 
       console.log("Calling handleGiveStatus mutation...");
@@ -172,15 +223,31 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true;    
     } else if (eventName == "uniswapSwapResult") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
-      console.log(newData[4][0].data + " = " + newData[4][1].data);
 
-      var amountTokenA = newData[2][1].data;
-      var amountTokenB = newData[3][1].data;
-      var liquidity = newData[4][1].data;
+      var amountTokenA,amountTokenB,liquidity;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+        console.log(newData[4][0] + " = " + newData[4][1]);
+
+        amountTokenA = newData[2][1];
+        amountTokenB = newData[3][1];
+        liquidity = newData[4][1];
+      }
+      else{
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+        console.log(newData[4][0].data + " = " + newData[4][1].data);
+  
+        amountTokenA = newData[2][1].data;
+        amountTokenB = newData[3][1].data;
+        liquidity = newData[4][1].data;
+      }
 
       console.log("amountTokenA: ", amountTokenA);
       console.log("amountTokenB: ", amountTokenB);
@@ -207,15 +274,33 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true; 
     } else if (eventName == "uniswap_reserves") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
-      console.log(newData[4][0].data + " = " + newData[4][1].data);
 
-      var reserveA = newData[2][1].data;
-      var reserveB = newData[3][1].data;
-      var blockTimestampLast = newData[4][1].data;
+      var reserveA,reserveB,blockTimestampLast;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+        console.log(newData[4][0] + " = " + newData[4][1]);
+  
+        reserveA = newData[2][1];
+        reserveB = newData[3][1];
+        blockTimestampLast = newData[4][1];
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+        console.log(newData[4][0].data + " = " + newData[4][1].data);
+  
+        reserveA = newData[2][1].data;
+        reserveB = newData[3][1].data;
+        blockTimestampLast = newData[4][1].data;
+      }
+      
 
       console.log("reserveA: ", reserveA);
       console.log("reserveB: ", reserveB);
@@ -241,11 +326,24 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true; 
     } else if (eventName == "liquidity_guard_status") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
 
-      var liquidityGuardStatusString = newData[2][1].data;
+      var liquidityGuardStatusString;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+  
+        liquidityGuardStatusString = newData[2][1];
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+  
+        liquidityGuardStatusString = newData[2][1].data;
+      }
 
       console.log("liquidityGuardStatusString: ", liquidityGuardStatusString);
 
@@ -273,19 +371,40 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true; 
     } else if (eventName == "referral_collected") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
-      console.log(newData[4][0].data + " = " + newData[4][1].data);
-      console.log(newData[5][0].data + " = " + newData[5][1].data);
-      console.log(newData[6][0].data + " = " + newData[6][1].data);
 
-      var staker = splitdata(newData[2][1].data);
-      var stakerId = newData[3][1].data;
-      var referrer = splitdata(newData[4][1].data);
-      var referrerId = newData[5][1].data;
-      var rewardAmount = newData[6][1].data;
+      var staker,stakerId,referrer,referrerId,rewardAmount;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+        console.log(newData[4][0] + " = " + newData[4][1]);
+        console.log(newData[5][0] + " = " + newData[5][1]);
+        console.log(newData[6][0] + " = " + newData[6][1]);
+  
+        staker = splitdata(newData[2][1]);
+        stakerId = newData[3][1];
+        referrer = splitdata(newData[4][1]);
+        referrerId = newData[5][1];
+        rewardAmount = newData[6][1];
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+        console.log(newData[4][0].data + " = " + newData[4][1].data);
+        console.log(newData[5][0].data + " = " + newData[5][1].data);
+        console.log(newData[6][0].data + " = " + newData[6][1].data);
+  
+        staker = splitdata(newData[2][1].data);
+        stakerId = newData[3][1].data;
+        referrer = splitdata(newData[4][1].data);
+        referrerId = newData[5][1].data;
+        rewardAmount = newData[6][1].data;
+      }
 
       console.log("staker: ", staker);
       console.log("stakerId: ", stakerId);
@@ -300,27 +419,59 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
 
     } else if (eventName == "stake_start") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
-      console.log(newData[4][0].data + " = " + newData[4][1].data);
-      console.log(newData[5][0].data + " = " + newData[5][1].data);
-      console.log(newData[6][0].data + " = " + newData[6][1].data);
-      console.log(newData[7][0].data + " = " + newData[7][1].data);
-      console.log(newData[8][0].data + " = " + newData[8][1].data);
-      console.log(newData[9][0].data + " = " + newData[9][1].data);
-      console.log(newData[10][0].data + " = " + newData[10][1].data);
 
-      var stakerAddress = splitdata(newData[2][1].data);
-      var referralAddress = splitdata(newData[3][1].data);
-      var referralShares = newData[4][1].data;
-      var stakeID = splitdata(newData[5][1].data);
-      var stakedAmount = newData[6][1].data;
-      var stakesShares = newData[7][1].data;
-      var startDay = newData[8][1].data;
-      var lockDays = newData[9][1].data;
-      var daiEquivalent = newData[10][1].data;
+      var stakerAddress,referralAddress,referralShares,
+      stakeID,stakedAmount,stakesShares,startDay,lockDays,
+      daiEquivalent;
+
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+        console.log(newData[4][0] + " = " + newData[4][1]);
+        console.log(newData[5][0] + " = " + newData[5][1]);
+        console.log(newData[6][0] + " = " + newData[6][1]);
+        console.log(newData[7][0] + " = " + newData[7][1]);
+        console.log(newData[8][0] + " = " + newData[8][1]);
+        console.log(newData[9][0] + " = " + newData[9][1]);
+        console.log(newData[10][0] + " = " + newData[10][1]);
+
+        stakerAddress = splitdata(newData[2][1]);
+        referralAddress = splitdata(newData[3][1]);
+        referralShares = newData[4][1];
+        stakeID = splitdata(newData[5][1]);
+        stakedAmount = newData[6][1];
+        stakesShares = newData[7][1];
+        startDay = newData[8][1];
+        lockDays = newData[9][1];
+        daiEquivalent = newData[10][1];
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+        console.log(newData[4][0].data + " = " + newData[4][1].data);
+        console.log(newData[5][0].data + " = " + newData[5][1].data);
+        console.log(newData[6][0].data + " = " + newData[6][1].data);
+        console.log(newData[7][0].data + " = " + newData[7][1].data);
+        console.log(newData[8][0].data + " = " + newData[8][1].data);
+        console.log(newData[9][0].data + " = " + newData[9][1].data);
+        console.log(newData[10][0].data + " = " + newData[10][1].data);
+        
+        stakerAddress = splitdata(newData[2][1].data);
+        referralAddress = splitdata(newData[3][1].data);
+        referralShares = newData[4][1].data;
+        stakeID = splitdata(newData[5][1].data);
+        stakedAmount = newData[6][1].data;
+        stakesShares = newData[7][1].data;
+        startDay = newData[8][1].data;
+        lockDays = newData[9][1].data;
+        daiEquivalent = newData[10][1].data;
+      }
 
       console.log("stakerAddress: ", stakerAddress);
       console.log("referralAddress: ", referralAddress);
@@ -380,28 +531,60 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true; 
     } else if (eventName == "stake_end") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
-      console.log(newData[4][0].data + " = " + newData[4][1].data);
-      console.log(newData[5][0].data + " = " + newData[5][1].data);
-      console.log(newData[6][0].data + " = " + newData[6][1].data);
-      console.log(newData[7][0].data + " = " + newData[7][1].data);
-      console.log(newData[8][0].data + " = " + newData[8][1].data);
-      console.log(newData[9][0].data + " = " + newData[9][1].data);
-      console.log(newData[10][0].data + " = " + newData[10][1].data);
 
-      var stakeID = splitdata(newData[2][1].data);
-      var stakerAddress = splitdata(newData[3][1].data);
-      var referralAddress = splitdata(newData[4][1].data);
-      var stakedAmount = newData[5][1].data;
-      var stakesShares = newData[6][1].data;
-      var referralShares = newData[7][1].data;
-      var rewardAmount = newData[8][1].data;
-      var closeDay = newData[9][1].data;
-      var penaltyAmount = newData[10][1].data;
+      var stakeID,stakerAddress,referralAddress,stakedAmount,
+      stakesShares,referralShares,rewardAmount,closeDay,
+      penaltyAmount;
 
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+        console.log(newData[4][0] + " = " + newData[4][1]);
+        console.log(newData[5][0] + " = " + newData[5][1]);
+        console.log(newData[6][0] + " = " + newData[6][1]);
+        console.log(newData[7][0] + " = " + newData[7][1]);
+        console.log(newData[8][0] + " = " + newData[8][1]);
+        console.log(newData[9][0] + " = " + newData[9][1]);
+        console.log(newData[10][0] + " = " + newData[10][1]);
+
+        stakeID = splitdata(newData[2][1]);
+        stakerAddress = splitdata(newData[3][1]);
+        referralAddress = splitdata(newData[4][1]);
+        stakedAmount = newData[5][1];
+        stakesShares = newData[6][1];
+        referralShares = newData[7][1];
+        rewardAmount = newData[8][1];
+        closeDay = newData[9][1];
+        penaltyAmount = newData[10][1];
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+        console.log(newData[4][0].data + " = " + newData[4][1].data);
+        console.log(newData[5][0].data + " = " + newData[5][1].data);
+        console.log(newData[6][0].data + " = " + newData[6][1].data);
+        console.log(newData[7][0].data + " = " + newData[7][1].data);
+        console.log(newData[8][0].data + " = " + newData[8][1].data);
+        console.log(newData[9][0].data + " = " + newData[9][1].data);
+        console.log(newData[10][0].data + " = " + newData[10][1].data);
+        
+        stakeID = splitdata(newData[2][1].data);
+        stakerAddress = splitdata(newData[3][1].data);
+        referralAddress = splitdata(newData[4][1].data);
+        stakedAmount = newData[5][1].data;
+        stakesShares = newData[6][1].data;
+        referralShares = newData[7][1].data;
+        rewardAmount = newData[8][1].data;
+        closeDay = newData[9][1].data;
+        penaltyAmount = newData[10][1].data;
+      }
+      
       console.log("stakeID: ", stakeID);
       console.log("stakerAddress: ", stakerAddress);
       console.log("referralAddress: ", referralAddress);
@@ -433,23 +616,51 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true;   
     } else if (eventName == "interest_scraped") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
-      console.log(newData[4][0].data + " = " + newData[4][1].data);
-      console.log(newData[5][0].data + " = " + newData[5][1].data);
-      console.log(newData[6][0].data + " = " + newData[6][1].data);
-      console.log(newData[7][0].data + " = " + newData[7][1].data);
-      console.log(newData[8][0].data + " = " + newData[8][1].data);
 
-      var stakeID = splitdata(newData[2][1].data);
-      var stakerAddress = splitdata(newData[3][1].data);
-      var scrapeAmount = newData[4][1].data;
-      var scrapeDay = newData[5][1].data;
-      var stakersPenalty = newData[6][1].data;
-      var referrerPenalty = newData[7][1].data;
-      var currentWiseDay = newData[8][1].data;
+      var stakeID,stakerAddress,scrapeAmount,scrapeDay,
+      stakersPenalty,referrerPenalty,currentWiseDay;
+
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+        console.log(newData[4][0] + " = " + newData[4][1]);
+        console.log(newData[5][0] + " = " + newData[5][1]);
+        console.log(newData[6][0] + " = " + newData[6][1]);
+        console.log(newData[7][0] + " = " + newData[7][1]);
+        console.log(newData[8][0] + " = " + newData[8][1]);
+  
+        stakeID = splitdata(newData[2][1]);
+        stakerAddress = splitdata(newData[3][1]);
+        scrapeAmount = newData[4][1];
+        scrapeDay = newData[5][1];
+        stakersPenalty = newData[6][1];
+        referrerPenalty = newData[7][1];
+        currentWiseDay = newData[8][1];
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+        console.log(newData[4][0].data + " = " + newData[4][1].data);
+        console.log(newData[5][0].data + " = " + newData[5][1].data);
+        console.log(newData[6][0].data + " = " + newData[6][1].data);
+        console.log(newData[7][0].data + " = " + newData[7][1].data);
+        console.log(newData[8][0].data + " = " + newData[8][1].data);
+  
+        stakeID = splitdata(newData[2][1].data);
+        stakerAddress = splitdata(newData[3][1].data);
+        scrapeAmount = newData[4][1].data;
+        scrapeDay = newData[5][1].data;
+        stakersPenalty = newData[6][1].data;
+        referrerPenalty = newData[7][1].data;
+        currentWiseDay = newData[8][1].data;
+      }
+      
 
       console.log("stakeID: ", stakeID);
       console.log("stakerAddress: ", stakerAddress);
@@ -495,19 +706,42 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true;      
     } else if (eventName == "new_globals") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
-      console.log(newData[4][0].data + " = " + newData[4][1].data);
-      console.log(newData[5][0].data + " = " + newData[5][1].data);
-      console.log(newData[6][0].data + " = " + newData[6][1].data);
 
-      var totalShares = newData[2][1].data;
-      var totalStaked = newData[3][1].data;
-      var shareRate = newData[4][1].data;
-      var referrerShares = newData[5][1].data;
-      var currentWiseDay = newData[6][1].data;
+      var totalShares,totalStaked,shareRate,
+      referrerShares,currentWiseDay;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+        console.log(newData[4][0] + " = " + newData[4][1]);
+        console.log(newData[5][0] + " = " + newData[5][1]);
+        console.log(newData[6][0] + " = " + newData[6][1]);
+  
+        totalShares = newData[2][1];
+        totalStaked = newData[3][1];
+        shareRate = newData[4][1];
+        referrerShares = newData[5][1];
+        currentWiseDay = newData[6][1];
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+        console.log(newData[4][0].data + " = " + newData[4][1].data);
+        console.log(newData[5][0].data + " = " + newData[5][1].data);
+        console.log(newData[6][0].data + " = " + newData[6][1].data);
+  
+        totalShares = newData[2][1].data;
+        totalStaked = newData[3][1].data;
+        shareRate = newData[4][1].data;
+        referrerShares = newData[5][1].data;
+        currentWiseDay = newData[6][1].data;
+      }
+      
       let wiseToken=await allcontractsDataModel.findOne({packageHash:process.env.WISETOKEN_PACKAGE_HASH});
       let uniswapPair=await allcontractsDataModel.findOne({packageHash:process.env.PAIR_PACKAGE_HASH});
       var wiseAddress = wiseToken.contractHash;
@@ -562,16 +796,33 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true;   
     } else if (eventName == "new_share_price") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
-      console.log(newData[4][0].data + " = " + newData[4][1].data);
 
-      var newSharePrice = newData[2][1].data;
-      var oldSharePrice = newData[3][1].data;
-      var currentWiseDay = newData[4][1].data;
-
+      var newSharePrice,oldSharePrice,currentWiseDay;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+        console.log(newData[4][0] + " = " + newData[4][1]);
+  
+        newSharePrice = newData[2][1];
+        oldSharePrice = newData[3][1];
+        currentWiseDay = newData[4][1];
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+        console.log(newData[4][0].data + " = " + newData[4][1].data);
+  
+        newSharePrice = newData[2][1].data;
+        oldSharePrice = newData[3][1].data;
+        currentWiseDay = newData[4][1].data;
+      }
+      
       console.log("newSharePrice: ", newSharePrice);
       console.log("oldSharePrice: ", oldSharePrice);
       console.log("currentWiseDay: ", currentWiseDay);
@@ -595,17 +846,36 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true;    
     } else if (eventName == "referral_added") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
-      console.log(newData[4][0].data + " = " + newData[4][1].data);
-      console.log(newData[5][0].data + " = " + newData[5][1].data);
 
-      var from = splitdata(newData[2][1].data);
-      var referral = splitdata(newData[3][1].data);
-      var referee = splitdata(newData[4][1].data);
-      var amount = newData[5][1].data;
+      var from,referral,referee,amount;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+        console.log(newData[4][0] + " = " + newData[4][1]);
+        console.log(newData[5][0] + " = " + newData[5][1]);
+  
+        from = splitdata(newData[2][1]);
+        referral = splitdata(newData[3][1]);
+        referee = splitdata(newData[4][1]);
+        amount = newData[5][1];
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+        console.log(newData[4][0].data + " = " + newData[4][1].data);
+        console.log(newData[5][0].data + " = " + newData[5][1].data);
+  
+        from = splitdata(newData[2][1].data);
+        referral = splitdata(newData[3][1].data);
+        referee = splitdata(newData[4][1].data);
+        amount = newData[5][1].data;
+      }
 
       console.log("from: ", from);
       console.log("referral: ", referral);
@@ -654,18 +924,40 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true;   
     } else if (eventName == "wiseReservation") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
-      console.log(newData[4][0].data + " = " + newData[4][1].data);
 
-      var from = splitdata(newData[5][1].data);
-      var amount = newData[3][1].data;
-      var tokens = newData[6][1].data;
+      var from,amount,tokens,currentWiseDay,investmentMode;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+        console.log(newData[4][0] + " = " + newData[4][1]);
+        console.log(newData[5][0] + " = " + newData[5][1]);
+        console.log(newData[6][0] + " = " + newData[6][1]);
 
-      var currentWiseDay = newData[1][1].data;
-      var investmentMode = newData[4][1].data;
+        from = splitdata(newData[5][1]);
+        amount = newData[3][1];
+        tokens = newData[6][1];
+        currentWiseDay = newData[1][1];
+        investmentMode = newData[4][1];
+
+      }
+      else{
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+        console.log(newData[4][0].data + " = " + newData[4][1].data);
+        console.log(newData[5][0].data + " = " + newData[5][1].data);
+        console.log(newData[6][0].data + " = " + newData[6][1].data);
+
+        from = splitdata(newData[5][1].data);
+        amount = newData[3][1].data;
+        tokens = newData[6][1].data;
+        currentWiseDay = newData[1][1].data;
+        investmentMode = newData[4][1].data;
+      }
 
       console.log("from: ", from);
       console.log("amount: ", amount);
@@ -718,14 +1010,29 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true;   
     } else if (eventName == "depositedLiquidity") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
 
-      var depositAmount = newData[2][1].data;
-      var transformerAddress = splitdata(newData[3][1].data);
-
+      var depositAmount,transformerAddress;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+  
+        depositAmount = newData[2][1];
+        transformerAddress = splitdata(newData[3][1]);
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+  
+        depositAmount = newData[2][1].data;
+        transformerAddress = splitdata(newData[3][1].data);
+      }
+      
       console.log("depositAmount: ", depositAmount);
       console.log("transformerAddress: ", transformerAddress);
 
@@ -749,13 +1056,28 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true;   
     } else if (eventName == "withdrawal") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
 
-      var fromAddress = splitdata(newData[2][1].data);
-      var tokenAmount = newData[3][1].data;
+      var fromAddress,tokenAmount;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+  
+        fromAddress = splitdata(newData[2][1]);
+        tokenAmount = newData[3][1];
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+  
+        fromAddress = splitdata(newData[2][1].data);
+        tokenAmount = newData[3][1].data;
+      }
 
       console.log("fromAddress: ", fromAddress);
       console.log("tokenAmount: ", tokenAmount);
@@ -780,18 +1102,38 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true;  
     } else if (eventName == "formedLiquidityv") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
-      console.log(newData[4][0].data + " = " + newData[4][1].data);
-      console.log(newData[5][0].data + " = " + newData[5][1].data);
 
-      var coverAmount = newData[2][1].data;
-      var amountTokenA = newData[3][1].data;
-      var amountTokenB = newData[4][1].data;
-      var liquidity = newData[5][1].data;
-
+      var coverAmount,amountTokenA,
+      amountTokenB,liquidity;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+        console.log(newData[4][0] + " = " + newData[4][1]);
+        console.log(newData[5][0] + " = " + newData[5][1]);
+  
+        coverAmount = newData[2][1];
+        amountTokenA = newData[3][1];
+        amountTokenB = newData[4][1];
+        liquidity = newData[5][1];
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+        console.log(newData[4][0].data + " = " + newData[4][1].data);
+        console.log(newData[5][0].data + " = " + newData[5][1].data);
+  
+        coverAmount = newData[2][1].data;
+        amountTokenA = newData[3][1].data;
+        amountTokenB = newData[4][1].data;
+        liquidity = newData[5][1].data;
+      }
+      
       console.log("coverAmount: ", coverAmount);
       console.log("amountTokenA: ", amountTokenA);
       console.log("amountTokenB: ", amountTokenB);
@@ -819,13 +1161,28 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true; 
     } else if (eventName == "LiquidityRemoved") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
 
-      var amountWcspr = newData[2][1].data;
-      var amountScspr = newData[3][1].data;
+      var amountWcspr,amountScspr;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+  
+        amountWcspr = newData[2][1];
+        amountScspr = newData[3][1];
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+  
+        amountWcspr = newData[2][1].data;
+        amountScspr = newData[3][1].data;
+      }
 
       console.log("amountWcspr: ", amountWcspr);
       console.log("amountScspr: ", amountScspr);
@@ -849,13 +1206,29 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true; 
     } else if (eventName == "SendFeesToMaster") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
 
-      var amountWcspr = newData[2][1].data;
-      var masterAddress = splitdata(newData[3][1].data);
+      var amountWcspr,masterAddress;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+  
+        amountWcspr = newData[2][1];
+        masterAddress = splitdata(newData[3][1]);
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+  
+        amountWcspr = newData[2][1].data;
+        masterAddress = splitdata(newData[3][1].data);
+      }
+      
 
       console.log("amountWcspr: ", amountWcspr);
       console.log("masterAddress: ", masterAddress);
@@ -880,15 +1253,33 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true; 
     } else if (eventName == "LiquidityAdded") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
-      console.log(newData[4][0].data + " = " + newData[4][1].data);
 
-      var amountWcspr = newData[2][1].data;
-      var amountScspr = newData[3][1].data;
-      var liquidity = newData[4][1].data;
+      var amountWcspr,amountScspr,liquidity;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+        console.log(newData[4][0] + " = " + newData[4][1]);
+  
+        amountWcspr = newData[2][1];
+        amountScspr = newData[3][1];
+        liquidity = newData[4][1];
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+        console.log(newData[4][0].data + " = " + newData[4][1].data);
+  
+        amountWcspr = newData[2][1].data;
+        amountScspr = newData[3][1].data;
+        liquidity = newData[4][1].data;
+      }
+      
 
       console.log("amountWcspr: ", amountWcspr);
       console.log("amountScspr: ", amountScspr);
@@ -914,13 +1305,28 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true; 
     } else if (eventName == "MasterProfit") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
 
-      var amountWcspr = newData[2][1].data;
-      var masterAddress = splitdata(newData[3][1].data);
+      var amountWcspr,masterAddress;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+  
+        amountWcspr = newData[2][1];
+        masterAddress = splitdata(newData[3][1]);
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+  
+        amountWcspr = newData[2][1].data;
+        masterAddress = splitdata(newData[3][1].data);
+      }
 
       console.log("amountWcspr: ", amountWcspr);
       console.log("masterAddress: ", masterAddress);
@@ -945,13 +1351,28 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
       return true; 
     } else if (eventName == "SendArbitrageProfitToMaster") {
       console.log(eventName + " Event result: ");
-      console.log(newData[0][0].data + " = " + newData[0][1].data);
-      console.log(newData[1][0].data + " = " + newData[1][1].data);
-      console.log(newData[2][0].data + " = " + newData[2][1].data);
-      console.log(newData[3][0].data + " = " + newData[3][1].data);
 
-      var amountWcspr = newData[2][1].data;
-      var masterAddress = splitdata(newData[3][1].data);
+      var amountWcspr,masterAddress;
+      if(newData[0][0].data == undefined)
+      {
+        console.log(newData[0][0] + " = " + newData[0][1]);
+        console.log(newData[1][0] + " = " + newData[1][1]);
+        console.log(newData[2][0] + " = " + newData[2][1]);
+        console.log(newData[3][0] + " = " + newData[3][1]);
+  
+        amountWcspr = newData[2][1];
+        masterAddress = splitdata(newData[3][1]);
+      }
+      else
+      {
+        console.log(newData[0][0].data + " = " + newData[0][1].data);
+        console.log(newData[1][0].data + " = " + newData[1][1].data);
+        console.log(newData[2][0].data + " = " + newData[2][1].data);
+        console.log(newData[3][0].data + " = " + newData[3][1].data);
+  
+        amountWcspr = newData[2][1].data;
+        masterAddress = splitdata(newData[3][1].data);
+      }
 
       console.log("amountWcspr: ", amountWcspr);
       console.log("masterAddress: ", masterAddress);

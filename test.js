@@ -1,6 +1,6 @@
 require("dotenv").config();
 var { request } = require("graphql-request");
-var eventObjectId="6337101ca0558aa43a11f0df";
+var eventObjectId="6343c4b29b0eaef326812b5c";
 
 async function RefundIssued(refundedTo, amount, deployHash) {
   console.log("Calling handleRefundIssued mutation...");
@@ -558,75 +558,77 @@ async function MasterRecord(masterAddress, amount, source) {
 }
 
 async function startTests() {
-  await DepositedLiquidity("123", "10000000000", "123");
-  await Withdrawal("123", "10000000000", "123");
-  await FormedLiquidity(
-    "10000000000",
-    "10000000000",
-    "1000000000",
-    "1000000000000",
-    "123"
-  );
-  await LiquidityAdded("1000000000", "10000000000", "10000000000");
-  await LiquidityRemoved("1000000000", "10000000000",);
-  await MasterRecord("123", "10000000000", "profit");
-  await UniswapSwapedResult(
-    "10000000000",
-    "100000000000",
-    "10000000000000",
-    "123"
-  );
-  await UniswapReserves("10000000000", "1000000000", "1000000000000");
-  await LiquidityGuardStatus("true");
-  await GiveStatus("123");
-  await StakeStart(
-    "123",
-    "123",
-    "100000000000",
-    "123",
-    "10000000000",
-    "100000000000",
-    "15000000000",
-    "15000000000",
-    "123"
-  );
-  await StakeEnd("123", "15000000000", "10000000000", "10000000000");
-  await InterestScraped(
-    "123",
-    "15000000000",
-    "10000000000",
-    "1000000000",
-    "1000000000"
-  );
-  await NewGlobals(
-    "100000000000",
-    "10000000000",
-    "1000000000",
-    "100000000000",
-    "15000000000",
-    "2c4275cc575806d7c5108635aa70aa82bee52d02a368bc765d700943ff082a8a",
-    "52c5469146d177dee3934aec78b074936441516878c5b0d7fee4a123c1f00ec1"
-  );
-  await NewSharePrice("10000000000000", "100000000000");
+  // await DepositedLiquidity("123", "10000000000", "123");
+  // await Withdrawal("123", "10000000000", "123");
+  // await FormedLiquidity(
+  //   "10000000000",
+  //   "10000000000",
+  //   "1000000000",
+  //   "1000000000000",
+  //   "123"
+  // );
+  // await LiquidityAdded("1000000000", "10000000000", "10000000000");
+  // await LiquidityRemoved("1000000000", "10000000000",);
+  // await MasterRecord("123", "10000000000", "profit");
+  // await UniswapSwapedResult(
+  //   "10000000000",
+  //   "100000000000",
+  //   "10000000000000",
+  //   "123"
+  // );
+  // await UniswapReserves("10000000000", "1000000000", "1000000000000");
+  // await LiquidityGuardStatus("true");
+  // await GiveStatus("123");
+  // await StakeStart(
+  //   "123",
+  //   "123",
+  //   "100000000000",
+  //   "123",
+  //   "10000000000",
+  //   "100000000000",
+  //   "15000000000",
+  //   "15000000000",
+  //   "123"
+  // );
+  // await StakeEnd("123", "15000000000", "10000000000", "10000000000");
+  // await InterestScraped(
+  //   "123",
+  //   "15000000000",
+  //   "10000000000",
+  //   "1000000000",
+  //   "1000000000"
+  // );
+  // await NewGlobals(
+  //   "100000000000",
+  //   "10000000000",
+  //   "1000000000",
+  //   "100000000000",
+  //   "15000000000",
+  //   "2c4275cc575806d7c5108635aa70aa82bee52d02a368bc765d700943ff082a8a",
+  //   "52c5469146d177dee3934aec78b074936441516878c5b0d7fee4a123c1f00ec1"
+  // );
+  // await NewSharePrice("10000000000000", "100000000000");
+
   await WiseReservation(
-    "d12bf0d06dc3a3a724fcf8f95495cdc9ccd8563e7a68c361eefb39c4d59b8911",
-    "7e353698ce0e6419c2add0cc0559605a4fd1dac46a6b71721e95e80dc1bb4616",
-    "1664964323000",
+    "27d95670363dc9b912ce7f2105af51b7d4a577b78c1076fbf51b255b1fb1801b",
+    "b105b639c3f9a0849c8934fa07a89308cb6680bd771a4d111bcbc1ed6d5e50dd",
+    "1665385592018",
     "24a56544c522eca7fba93fb7a6cef83e086706fd87b2f344f5c3dad3603d11f1",
-    "1000000000",
-    "1320000000000",
-    "8",
+    "5000000000",
+    "6600000000000",
+    "12",
     "1"
   );
-  await RefundIssued("123", "10000000000", "123");
-  await CashBackIssued(
-    "100000000000000000",
-    "123",
-    "10000000000",
-    "10000000000",
-    "123"
-  );
+
+  // await RefundIssued("123", "10000000000", "123");
+  // await CashBackIssued(
+  //   "100000000000000000",
+  //   "123",
+  //   "10000000000",
+  //   "10000000000",
+  //   "123"
+  // );
   //await ReferralAdded("123", "123", "123", "123", "123", "123", "10000000000");
 }
 
-startTests();
+//startTests();
