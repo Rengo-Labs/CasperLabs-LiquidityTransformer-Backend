@@ -1,4 +1,4 @@
 /node_modules
-/Scripts/LIQUIDITYTRANSFORMER
-/Scripts/WISETOKEN
+/Scripts/LIQUIDITYTRANSFORMER/keys
+/Scripts/WISETOKEN/keys
 /.env
