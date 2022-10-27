@@ -19,7 +19,10 @@ const {
 	ROUTER_ADDRESS,
 	FACTORY_PACKAGE,
 	LIQUIDITY_GUARD_PACKAGE,
-	LAUNCH_TIME
+	LAUNCH_TIME,
+	WISETOKEN_PACKAGE_HASH,
+	LIQUIDITYTRANSFORMER_PACKAGE_HASH,
+	WISETOKEN_SessionCode_WASM_PATH
 } = process.env;
 
 const KEYS = Keys.Ed25519.parseKeyFiles(
@@ -27,12 +30,13 @@ const KEYS = Keys.Ed25519.parseKeyFiles(
 	`${WISETOKEN_MASTER_KEY_PAIR_PATH}/secret_key.pem`
 );
 
+const wise = new WISETokenClient(
+	NODE_ADDRESS!,
+	CHAIN_NAME!,
+	EVENT_STREAM_ADDRESS!
+);
+
 const test = async () => {
-	const wise = new WISETokenClient(
-		NODE_ADDRESS!,
-		CHAIN_NAME!,
-		EVENT_STREAM_ADDRESS!
-	);
 	
 	const installDeployHash = await wise.install(
 		KEYS,
@@ -73,5 +77,27 @@ const test = async () => {
 	
 	console.log(`... Package Hash: ${packageHash}`);
 };
+
+const testSetLiquidityTransformerWithSessionCode = async () => {
+
+	let entrypointName="set_liquidity_transfomer";
+	const installDeployHash = await wise.setLiquidityTransformerWithSessionCode(
+	  KEYS,
+	  WISETOKEN_PACKAGE_HASH!,
+	  entrypointName,
+	  LIQUIDITYTRANSFORMER_PACKAGE_HASH!,
+	  WISETOKEN_INSTALL_PAYMENT_AMOUNT!,
+	  WISETOKEN_SessionCode_WASM_PATH!
+	);
+  
+	console.log(`... Set Liquidity Transformer Function deployHash: ${installDeployHash}`);
+  
+	await getDeploy(NODE_ADDRESS!, installDeployHash);
+  
+	console.log(`...Set Liquidity Transformer Function called successfully through sessionCode.`);
+  
+};
+  
+//testSetLiquidityTransformerWithSessionCode();
 
 //test();

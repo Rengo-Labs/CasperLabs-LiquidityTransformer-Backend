@@ -28,6 +28,9 @@ const globalReservationDaysRoute = require("./routes/globalReservationDaysRoute"
 
 var eventsDataModel = require("./models/eventsData");
 
+//calling forwardLiquidity script
+//require("./Scripts/LIQUIDITYTRANSFORMER/deploy/forwardLiquidity.ts");
+
 //kafka setup
 const consumer = require('./consumer');
 
@@ -51,6 +54,8 @@ var redis = require('./connectRedis');
 function deserialize(serializedJavascript){
   return eval('(' + serializedJavascript + ')');
 }
+
+
 
 app.use("/", adminRouter);
 app.use("/", afterDeploymentRouter);
