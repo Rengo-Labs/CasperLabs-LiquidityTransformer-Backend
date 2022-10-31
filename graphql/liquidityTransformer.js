@@ -835,7 +835,7 @@ const handleFormedLiquidity = {
         id:
           process.env.WISETOKEN_PACKAGE_HASH +
           " - " +
-          process.env.ERC20_PACKAGE_HASH +
+          process.env.STABLE_USD_PACKAGE_HASH +
           " - " +
           process.env.PAIR_PACKAGE_HASH,
       });
@@ -844,16 +844,16 @@ const handleFormedLiquidity = {
           id:
             process.env.WISETOKEN_PACKAGE_HASH +
             " - " +
-            process.env.ERC20_PACKAGE_HASH +
+            process.env.STABLE_USD_PACKAGE_HASH +
             " - " +
             process.env.PAIR_PACKAGE_HASH,
           tokenA: process.env.WISETOKEN_PACKAGE_HASH,
-          tokenB: process.env.ERC20_PACKAGE_HASH,
+          tokenB: process.env.STABLE_USD_PACKAGE_HASH,
           amountTokenA: args.amountTokenA,
           amountTokenB: args.amountTokenB,
           liquidity: args.liquidity,
           pair: process.env.PAIR_PACKAGE_HASH,
-          to: process.env.ERC20_PACKAGE_HASH,
+          to: process.env.STABLE_USD_PACKAGE_HASH,
           coverAmount: args.coverAmount,
         });
       } else {
