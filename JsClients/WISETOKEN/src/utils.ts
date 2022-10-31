@@ -41,6 +41,15 @@ export const getBinary = (pathToBinary: string) => {
 };
 
 /**
+ * Returns a binary as a buffer.
+ * @param pathToBinary - Path to binary file to be loaded into memory.
+ * @return buffer .
+ */
+ export const getWasmDataInBuffer = (pathToBinary: string) => {
+  return fs.readFileSync(pathToBinary, null);
+};
+
+/**
  * Returns global state root hash at current block.
  * @param {Object} client - JS SDK client for interacting with a node.
  * @return {String} Root hash of global state at most recent block.
