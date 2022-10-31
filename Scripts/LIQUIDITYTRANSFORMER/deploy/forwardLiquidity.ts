@@ -36,10 +36,7 @@ const callForwardLiquidity = async () => {
 	/* Forward Liquidity */
 	// -- Prerequisite Calls --
 	// set_wise						scspr => wise
-	// set_white_list				factory => scspr
-	// set_white_list				factory => wise
-	// create_pair					wise
-	// create_pair					scspr
+	// set_white_list				factory => router 
 	// set_liquidity_transfomer		wise
 	// reserve_wise					liquidity_transfomer
 
