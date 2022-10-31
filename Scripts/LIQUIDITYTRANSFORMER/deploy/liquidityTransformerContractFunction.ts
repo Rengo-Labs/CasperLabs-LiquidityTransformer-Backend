@@ -31,7 +31,7 @@ const {
 	TOKEN0_CONTRACT,
 	TOKEN1_CONTRACT,
 	// PAIR_CONTRACT,
-	RESERVE_WISE_PAYMENT_AMOUNT,
+	LIQUIDITYTRANSFORMER_FUNCTIONS_PAYMENT_AMOUNT,
 	INVESTMENT_DAY,
 	INVESTMENT_DAYS,
 	INVESTMENT_BALANCE,
@@ -87,7 +87,7 @@ const test = async () => {
 	// 	INVESTMENT_MODE!,
 	// 	MSG_VALUE!,
 	// 	CALLER_PURSE!,
-	// 	RESERVE_WISE_PAYMENT_AMOUNT!
+	// 	LIQUIDITYTRANSFORMER_FUNCTIONS_PAYMENT_AMOUNT!
 	// );
 	// console.log("... _reserve_Wise deploy hash: ", _reserve_Wise);
 
@@ -102,7 +102,7 @@ const test = async () => {
 	// 	AMOUNT!,
 	// 	INVESTMENT_MODE!,
 	// 	CALLER_PURSE!,
-	// 	RESERVE_WISE_PAYMENT_AMOUNT!
+	// 	LIQUIDITYTRANSFORMER_FUNCTIONS_PAYMENT_AMOUNT!
 	// );
 	// console.log("... reserveWiseWithToken deploy hash: ", reserveWiseWithToken);
 	// await getDeploy(NODE_ADDRESS!, reserveWiseWithToken);
@@ -112,38 +112,33 @@ const test = async () => {
 	// const requestRefund = await liquidity.requestRefund(
 	// 	KEYS,
 	//  CALLER_PURSE!,
-	// 	RESERVE_WISE_PAYMENT_AMOUNT!
+	// 	LIQUIDITYTRANSFORMER_FUNCTIONS_PAYMENT_AMOUNT!
 	// );
 	// console.log(`... requestRefund deploy hash: ${requestRefund}`);
 
 	// await getDeploy(NODE_ADDRESS!, requestRefund);
 	// console.log("... requestRefund called successfully");
 
-	// call set_liquidity_transfomer
-	// call set_wise
-	// call erc20 mint against scspr_package
-	// call approve of scspr against router_package
-	// call erc20 mint against pair_package
-	// call erc20 2 mint against scspr_package
-	// call erc20 2 mint against pair_package
-	// call pair initialize function
-	// call pair sync method
-	//forwardliquidity
-	// const forwardLiquidity = await liquidity.forwardLiquidity(
-	// 	KEYS,
-	// 	CALLER_PURSE!,
-	// 	RESERVE_WISE_PAYMENT_AMOUNT!
-	// );
-	// console.log("... forwardLiquidity deploy hash: ", forwardLiquidity);
-	// await getDeploy(NODE_ADDRESS!, forwardLiquidity);
-	// console.log("... forwardLiquidity called successfully");
+	/* Forward Liquidity */
+	// -- Prerequisite Calls --
+	// set_wise						scspr => wise
+	// set_white_list				factory => router 
+	// set_liquidity_transfomer		wise
+	// reserve_wise					liquidity_transfomer
+	const forwardLiquidity = await liquidity.forwardLiquidity(
+		KEYS,
+		LIQUIDITYTRANSFORMER_FUNCTIONS_PAYMENT_AMOUNT!
+	);
+	console.log("... forwardLiquidity deploy hash: ", forwardLiquidity);
+	await getDeploy(NODE_ADDRESS!, forwardLiquidity);
+	console.log("... forwardLiquidity called successfully");
 
 	// const _setSettings = await liquidity.setSettings(
 	// 	KEYS,
 	// 	WISETOKEN_CONTRACT_HASH!,
 	// 	PAIR_CONTRACT_HASH!,
 	// 	SYNTHETIC_CSPR_ADDRESS!,
-	// 	RESERVE_WISE_PAYMENT_AMOUNT!
+	// 	LIQUIDITYTRANSFORMER_FUNCTIONS_PAYMENT_AMOUNT!
 	// );
 	// console.log("... _setSettings deploy hash: ", _setSettings);
 
@@ -152,7 +147,7 @@ const test = async () => {
 
 	// const getMyTokens = await liquidity.getMyTokens(
 	// 	KEYS,
-	// 	RESERVE_WISE_PAYMENT_AMOUNT!
+	// 	LIQUIDITYTRANSFORMER_FUNCTIONS_PAYMENT_AMOUNT!
 	// );
 	// console.log("... getMyTokens deploy hash: ", getMyTokens);
 	// await getDeploy(NODE_ADDRESS!, getMyTokens);
@@ -171,8 +166,8 @@ const test = async () => {
 	// const preparePath = await liquidity.preparePath(KEYS.publicKey);
 	// console.log(`... Contract allpairs: ${preparePath}`);
 
-	const currentWiseDay = await liquidity.currentWiseDay();
-	console.log(`... currentWiseDay : ${currentWiseDay}`);
+	// const currentWiseDay = await liquidity.currentWiseDay();
+	// console.log(`... currentWiseDay : ${currentWiseDay}`);
 
 };
 

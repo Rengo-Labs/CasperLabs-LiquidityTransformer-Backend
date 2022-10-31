@@ -127,7 +127,42 @@ class WISETokenClient {
 			throw Error("Problem with installation");
 		}
 	}
-
+	public async setLiquidityTransformerWithSessionCode(
+		keys: Keys.AsymmetricKey,
+		packageHash: string,
+		entrypointName:string,
+		ltPackageHash: string,
+		paymentAmount: string,
+		wasmPath: string
+	  ) 
+	{
+		const _packageHash = new CLByteArray(
+				Uint8Array.from(Buffer.from(packageHash, "hex"))
+		);
+		const _ltPackageHash = new CLByteArray(
+			Uint8Array.from(Buffer.from(ltPackageHash, "hex"))
+		);
+		const runtimeArgs = RuntimeArgs.fromMap({
+		  package_hash: utils.createRecipientAddress(_packageHash),
+		  entrypoint: CLValueBuilder.string(entrypointName),
+		  immutable_transformer: CLValueBuilder.key(_ltPackageHash),
+		});
+	
+		const deployHash = await installWasmFile({
+		  chainName: this.chainName,
+		  paymentAmount,
+		  nodeAddress: this.nodeAddress,
+		  keys,
+		  pathToContract: wasmPath,
+		  runtimeArgs,
+		});
+	
+		if (deployHash !== null) {
+		  return deployHash;
+		} else {
+		  throw Error("Problem with installation");
+		}
+	}
 	public async setContractHash(hash: string) {
 		const stateRootHash = await utils.getStateRootHash(this.nodeAddress);
 		const contractData = await utils.getContractData(
@@ -283,6 +318,29 @@ class WISETokenClient {
 		return "0";
 		}
 
+	}
+	public async createPair(
+		keys: Keys.AsymmetricKey,
+		paymentAmount: string
+	) {
+		const runtimeArgs = RuntimeArgs.fromMap({});
+
+		const deployHash = await contractCall({
+		chainName: this.chainName,
+		contractHash: this.contractHash,
+		entryPoint: "create_pair",
+		keys,
+		nodeAddress: this.nodeAddress,
+		paymentAmount,
+		runtimeArgs,
+		});
+
+		if (deployHash !== null) {
+		
+		return deployHash;
+		} else {
+		throw Error("Invalid Deploy");
+		}
 	}
 
 	public async approve(

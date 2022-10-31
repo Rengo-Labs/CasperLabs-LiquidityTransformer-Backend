@@ -328,17 +328,9 @@ class LIQUIDITYClient {
 
 	public async forwardLiquidity(
 		keys: Keys.AsymmetricKey,
-		succesorPurse:string,
 		paymentAmount: string
 	) {
-		const succesor_purse = new CLURef(
-			decodeBase16(succesorPurse),
-			AccessRights.READ_ADD_WRITE
-		);
-		const runtimeArgs = RuntimeArgs.fromMap({
-			purse: succesor_purse
-		});
-
+		const runtimeArgs = RuntimeArgs.fromMap({});
 		const deployHash = await contractCall({
 			chainName: this.chainName,
 			contractHash: this.contractHash,
@@ -348,7 +340,6 @@ class LIQUIDITYClient {
 			keys: keys,
 			runtimeArgs,
 		});
-
 		if (deployHash !== null) {
 			return deployHash;
 		} else {
