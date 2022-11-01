@@ -1,6 +1,6 @@
 require("dotenv").config();
 var { request } = require("graphql-request");
-var eventObjectId="6357fad804ccc15c39fa17e9";
+var eventObjectId="635fd07e5c30ab072e0b7496";
 
 async function RefundIssued(refundedTo, amount, deployHash) {
   console.log("Calling handleRefundIssued mutation...");
@@ -580,15 +580,15 @@ async function startTests() {
   // await LiquidityGuardStatus("true");
   // await GiveStatus("123");
   // await StakeStart(
-  //   "123",
-  //   "123",
-  //   "100000000000",
-  //   "123",
-  //   "10000000000",
-  //   "100000000000",
-  //   "15000000000",
-  //   "15000000000",
-  //   "123"
+  //   "24a56544c522eca7fba93fb7a6cef83e086706fd87b2f344f5c3dad3603d11f1",
+  //   "282fabb87a057d991937770223de98ae86f6e652a050825aa196dfd4f480029e",
+  //   "115500000000000001155000",
+  //   "[49020, 28301, 19313, 50701, 60343, 43970, 40891, 23772, 62182, 34752, 60015, 62783, 33387, 61153, 14013, 18915]",
+  //   "115500000000000",
+  //   "1270500001155000",
+  //   "21",
+  //   "730",
+  //   "866"
   // );
   // await StakeEnd("123", "15000000000", "10000000000", "10000000000");
   // await InterestScraped(
@@ -599,26 +599,26 @@ async function startTests() {
   //   "1000000000"
   // );
   // await NewGlobals(
-  //   "100000000000",
-  //   "10000000000",
-  //   "1000000000",
-  //   "100000000000",
-  //   "15000000000",
-  //   "2c4275cc575806d7c5108635aa70aa82bee52d02a368bc765d700943ff082a8a",
-  //   "52c5469146d177dee3934aec78b074936441516878c5b0d7fee4a123c1f00ec1"
+  //   "1270500001155000",
+  //   "115500000000000",
+  //   "100000000000000000",
+  //   "115500000000000001155000",
+  //   "0",
+  //   "11ac763d5e81e95403e32a0648c90da75a9d8e1e5d908a609b805420711d318b",
+  //   "24a4e46fd600eea1f057aeb7f3bf70a4468b5ec3c3098c8037b6952a8ec57e28"
   // );
   // await NewSharePrice("10000000000000", "100000000000");
 
-  await WiseReservation(
-    "7f0b2ce4a409ac13d595d9a5a80066d04aef7f117342eb1d8f7ec82b5ae262f2",
-    "5a35327dfe68cd5337463141577f261ebc72a614f523c7cff1fabe49705937ab",
-    "1666795310000",
-    "99f85a87138de56f93ed63d09a6d5ccccaf4b093b0ac829c47fee9d95ea8499d",
-    "170000000000",
-    "224400000000000",
-    "15",
-    "1"
-  );
+  // await WiseReservation(
+  //   "7f0b2ce4a409ac13d595d9a5a80066d04aef7f117342eb1d8f7ec82b5ae262f2",
+  //   "5a35327dfe68cd5337463141577f261ebc72a614f523c7cff1fabe49705937ab",
+  //   "1666795310000",
+  //   "99f85a87138de56f93ed63d09a6d5ccccaf4b093b0ac829c47fee9d95ea8499d",
+  //   "170000000000",
+  //   "224400000000000",
+  //   "15",
+  //   "1"
+  // );
 
   // await RefundIssued("123", "10000000000", "123");
   // await CashBackIssued(

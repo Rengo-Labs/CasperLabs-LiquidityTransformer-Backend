@@ -438,15 +438,18 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
         console.log(newData[9][0] + " = " + newData[9][1]);
         console.log(newData[10][0] + " = " + newData[10][1]);
 
-        stakerAddress = splitdata(newData[2][1]);
-        referralAddress = splitdata(newData[3][1]);
-        referralShares = newData[4][1];
-        stakeID = splitdata(newData[5][1]);
-        stakedAmount = newData[6][1];
-        stakesShares = newData[7][1];
-        startDay = newData[8][1];
-        lockDays = newData[9][1];
-        daiEquivalent = newData[10][1];
+        
+        daiEquivalent = newData[1][1];
+        lockDays = newData[3][1];
+        referralAddress = splitdata(newData[4][1]);
+        referralShares = newData[5][1];
+        //stakeID = splitdata(newData[6][1]);
+        stakeID = newData[6][1];
+        stakedAmount = newData[7][1];
+        stakerAddress = splitdata(newData[8][1]);
+        stakesShares = newData[9][1];
+        startDay = newData[10][1];
+
       }
       else
       {
@@ -462,15 +465,16 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
         console.log(newData[9][0].data + " = " + newData[9][1].data);
         console.log(newData[10][0].data + " = " + newData[10][1].data);
         
-        stakerAddress = splitdata(newData[2][1].data);
-        referralAddress = splitdata(newData[3][1].data);
-        referralShares = newData[4][1].data;
-        stakeID = splitdata(newData[5][1].data);
-        stakedAmount = newData[6][1].data;
-        stakesShares = newData[7][1].data;
-        startDay = newData[8][1].data;
-        lockDays = newData[9][1].data;
-        daiEquivalent = newData[10][1].data;
+        daiEquivalent = newData[1][1].data;
+        lockDays = newData[3][1].data;
+        referralAddress = splitdata(newData[4][1].data);
+        referralShares = newData[5][1].data;
+        //stakeID = splitdata(newData[6][1].data);
+        stakeID = newData[6][1].data;
+        stakedAmount = newData[7][1].data;
+        stakerAddress = splitdata(newData[8][1].data);
+        stakesShares = newData[9][1].data;
+        startDay = newData[10][1].data;
       }
 
       console.log("stakerAddress: ", stakerAddress);
@@ -719,11 +723,11 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
         console.log(newData[5][0] + " = " + newData[5][1]);
         console.log(newData[6][0] + " = " + newData[6][1]);
   
-        totalShares = newData[2][1];
-        totalStaked = newData[3][1];
+        totalShares = newData[5][1];
+        totalStaked = newData[6][1];
         shareRate = newData[4][1];
-        referrerShares = newData[5][1];
-        currentWiseDay = newData[6][1];
+        referrerShares = newData[3][1];
+        currentWiseDay = newData[1][1];
       }
       else
       {
@@ -735,11 +739,11 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
         console.log(newData[5][0].data + " = " + newData[5][1].data);
         console.log(newData[6][0].data + " = " + newData[6][1].data);
   
-        totalShares = newData[2][1].data;
-        totalStaked = newData[3][1].data;
+        totalShares = newData[5][1].data;
+        totalStaked = newData[6][1].data;
         shareRate = newData[4][1].data;
-        referrerShares = newData[5][1].data;
-        currentWiseDay = newData[6][1].data;
+        referrerShares = newData[3][1].data;
+        currentWiseDay = newData[1][1].data;
       }
       
       let wiseToken=await allcontractsDataModel.findOne({packageHash:process.env.WISETOKEN_PACKAGE_HASH});

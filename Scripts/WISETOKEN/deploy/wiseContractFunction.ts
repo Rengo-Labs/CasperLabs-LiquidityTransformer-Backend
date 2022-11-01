@@ -43,6 +43,7 @@ const {
 	WISE_FUNCTIONS_INSTALL_PAYMENT_AMOUNT,
 	WISETOKEN_CONTRACT_HASH,
 	WISETOKEN_PACKAGE_HASH,
+	STABLE_USD_EQUIVALENT_PACKAGE_HASH,
 	CALLER_PURSE,
 	TOKEN_AMOUNT,
 	TOKEN_ADRESS,
@@ -66,20 +67,6 @@ const test = async () => {
 	await wise.setContractHash(WISETOKEN_CONTRACT_HASH!);
 
 	//mint
-	const createPairDeployHash = await wise.createPair(
-		KEYS,
-		WISE_FUNCTIONS_INSTALL_PAYMENT_AMOUNT!
-	);
-	console.log("...create pair deploy hash: ", createPairDeployHash);
-	
-	await getDeploy(NODE_ADDRESS!, createPairDeployHash);
-	console.log("... Wise pair with WCSPR created successfully.");
-
-	// const _refferer = new CLByteArray(
-	// 	Uint8Array.from(Buffer.from("7eb6fb7fb5c61de23f296f0accc2d4bda83e7c2a4e95d18d5f466c783b1e2219", "hex"))
-	// );
-
-	//mint
 	// const mintDeployHash = await wise.mint(
 	// 	KEYS,
 	// 	KEYS.publicKey,
@@ -92,14 +79,14 @@ const test = async () => {
 	// console.log("... Token minted successfully.");
 
 	//setStableUSD
-	// const setBusd = await wise.setStableUsd(
-	// 	KEYS,
-	// 	STABLE_USD_EQUIVALENT_CONTRACT_HASH!,
-	// 	RESERVE_WISE_PAYMENT_AMOUNT!
-	// );
-	// console.log("... setBusd deploy hash: ", setBusd);
-	// await getDeploy(NODE_ADDRESS!, setBusd);
-	// console.log("... setBusd called successfully");
+	const setBusd = await wise.setStableUsd(
+		KEYS,
+		STABLE_USD_EQUIVALENT_PACKAGE_HASH!,
+		RESERVE_WISE_PAYMENT_AMOUNT!
+	);
+	console.log("... setBusd deploy hash: ", setBusd);
+	await getDeploy(NODE_ADDRESS!, setBusd);
+	console.log("... setBusd called successfully");
 
 	// set_stable_usd_equivalent
 	// mint staked amount wise to stakerid
