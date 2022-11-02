@@ -319,30 +319,7 @@ class WISETokenClient {
 		}
 
 	}
-	public async createPair(
-		keys: Keys.AsymmetricKey,
-		paymentAmount: string
-	) {
-		const runtimeArgs = RuntimeArgs.fromMap({});
-
-		const deployHash = await contractCall({
-		chainName: this.chainName,
-		contractHash: this.contractHash,
-		entryPoint: "create_pair",
-		keys,
-		nodeAddress: this.nodeAddress,
-		paymentAmount,
-		runtimeArgs,
-		});
-
-		if (deployHash !== null) {
-		
-		return deployHash;
-		} else {
-		throw Error("Invalid Deploy");
-		}
-	}
-
+	
 	public async approve(
 		keys: Keys.AsymmetricKey,
 		spender: string,

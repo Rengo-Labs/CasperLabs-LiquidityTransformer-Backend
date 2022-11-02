@@ -25,6 +25,7 @@ const userRoutes = require("./routes/userRoute");
 const readWasmRouter = require("./routes/readWasm");
 const userReservationDaysRoute = require("./routes/userReservationDaysRoute");
 const globalReservationDaysRoute = require("./routes/globalReservationDaysRoute");
+const claimWiseRoute = require("./routes/claimWiseRoute");
 
 var eventsDataModel = require("./models/eventsData");
 
@@ -90,6 +91,7 @@ app.use("/", userRoutes);
 app.use("/", readWasmRouter);
 app.use("/", userReservationDaysRoute);
 app.use("/", globalReservationDaysRoute);
+app.use("/", claimWiseRoute);
 
 app.use(
   "/graphql",
