@@ -28,7 +28,7 @@ router.route("/getLiquidityTransformerSessionCodeWasmData").get(async function (
 router.route("/getWiseTokenSessionCodeWasmData").get(async function (req, res, next) {
   try {
 
-    let wasmData= wiseTokenJsClient.getWasmDataInBuffer('Scripts/WISETOKEN/wasm/session-code-wise.wasm');
+    let wasmData= wiseTokenJsClient.getWasmDataInBuffer('Scripts/WISETOKEN/wasm/session-code-stakeable.wasm');
     console.log(wasmData);
     
     return res.status(200).json({

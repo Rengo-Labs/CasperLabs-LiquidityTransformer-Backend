@@ -548,37 +548,7 @@ class WISETokenClient {
 			throw Error("Invalid Deploy");
 		}
 	}
-
-	public async setStableUsd(
-		keys: Keys.AsymmetricKey,
-		equalizerAddress: string,
-		paymentAmount: string
-	) {
-		const equalizer_address = new CLByteArray(
-			Uint8Array.from(Buffer.from(equalizerAddress, "hex"))
-		);
-
-		const runtimeArgs = RuntimeArgs.fromMap({
-			equalizer_address: CLValueBuilder.key(equalizer_address),
-		});
-
-		const deployHash = await contractCall({
-			chainName: this.chainName,
-			contractHash: this.contractHash,
-			entryPoint: "set_stable_usd_equivalent",
-			paymentAmount,
-			nodeAddress: this.nodeAddress,
-			keys: keys,
-			runtimeArgs,
-		});
-
-		if (deployHash !== null) {
-			return deployHash;
-		} else {
-			throw Error("Invalid Deploy");
-		}
-	}
-
+	
 	public async renounceKeeper(keys: Keys.AsymmetricKey, paymentAmount: string) {
 		const runtimeArgs = RuntimeArgs.fromMap({});
 

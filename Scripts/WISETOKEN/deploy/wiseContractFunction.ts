@@ -78,17 +78,6 @@ const test = async () => {
 	// await getDeploy(NODE_ADDRESS!, mintDeployHash);
 	// console.log("... Token minted successfully.");
 
-	//setStableUSD
-	const setBusd = await wise.setStableUsd(
-		KEYS,
-		STABLE_USD_EQUIVALENT_PACKAGE_HASH!,
-		RESERVE_WISE_PAYMENT_AMOUNT!
-	);
-	console.log("... setBusd deploy hash: ", setBusd);
-	await getDeploy(NODE_ADDRESS!, setBusd);
-	console.log("... setBusd called successfully");
-
-	// set_stable_usd_equivalent
 	// mint staked amount wise to stakerid
 	// set_scspr
 	// set_allow_deposit

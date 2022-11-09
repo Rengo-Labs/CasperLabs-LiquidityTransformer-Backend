@@ -609,16 +609,16 @@ async function startTests() {
   // );
   // await NewSharePrice("10000000000000", "100000000000");
 
-  // await WiseReservation(
-  //   "7f0b2ce4a409ac13d595d9a5a80066d04aef7f117342eb1d8f7ec82b5ae262f2",
-  //   "5a35327dfe68cd5337463141577f261ebc72a614f523c7cff1fabe49705937ab",
-  //   "1666795310000",
-  //   "99f85a87138de56f93ed63d09a6d5ccccaf4b093b0ac829c47fee9d95ea8499d",
-  //   "170000000000",
-  //   "224400000000000",
-  //   "15",
-  //   "1"
-  // );
+  await WiseReservation(
+    "9b1a147e6553007f82d144dd1b863cfdeb291daa0e34ba33c1a37b7853ce3bd0",
+    "c49a948915d7ffe66a04ddf5015e3418580e24e9329f0c95c0201a12420ff73c",
+    "1667915487000",
+    "99f85a87138de56f93ed63d09a6d5ccccaf4b093b0ac829c47fee9d95ea8499d",
+    "170000000000",
+    "224400000000000",
+    "15",
+    "1"
+  );
 
   // await RefundIssued("123", "10000000000", "123");
   // await CashBackIssued(

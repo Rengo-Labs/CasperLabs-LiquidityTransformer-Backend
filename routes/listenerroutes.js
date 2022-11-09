@@ -233,8 +233,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
         console.log(newData[3][0] + " = " + newData[3][1]);
         console.log(newData[4][0] + " = " + newData[4][1]);
 
-        amountTokenA = newData[2][1];
-        amountTokenB = newData[3][1];
+        amountTokenA = newData[0][1];
+        amountTokenB = newData[1][1];
         liquidity = newData[4][1];
       }
       else{
@@ -244,8 +244,8 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
         console.log(newData[3][0].data + " = " + newData[3][1].data);
         console.log(newData[4][0].data + " = " + newData[4][1].data);
   
-        amountTokenA = newData[2][1].data;
-        amountTokenB = newData[3][1].data;
+        amountTokenA = newData[0][1].data;
+        amountTokenB = newData[1][1].data;
         liquidity = newData[4][1].data;
       }
 
