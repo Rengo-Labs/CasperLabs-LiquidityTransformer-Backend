@@ -77,7 +77,7 @@ class WISETokenClient {
 		routerAddress: string,
 		factoryAddress: string,
 		liquidityguardAddress: string,
-		launchtime: string,
+		stableUSD: string,
 		contractName: string,
 		paymentAmount: string,
 		wasmPath: string
@@ -100,15 +100,19 @@ class WISETokenClient {
 		const liquidity_guard_contract = new CLByteArray(
 			Uint8Array.from(Buffer.from(liquidityguardAddress, "hex"))
 		);
-		
+		const _stableUSD = new CLByteArray(
+			Uint8Array.from(Buffer.from(stableUSD, "hex"))
+		);
+
 		const runtimeArgs = RuntimeArgs.fromMap({
 			wcspr: CLValueBuilder.key(wcspr_contract),
 			scspr: CLValueBuilder.key(scspr_contract),
-			pair: CLValueBuilder.key(pair_contract),
-			router: CLValueBuilder.key(router_contract),
-			factory: CLValueBuilder.key(factory_contract),
+			uniswap_pair: CLValueBuilder.key(pair_contract),
+			uniswap_router: CLValueBuilder.key(router_contract),
+			uniswap_factory: CLValueBuilder.key(factory_contract),
 			liquidity_guard: CLValueBuilder.key(liquidity_guard_contract),
-			launch_time: CLValueBuilder.u256(launchtime),
+			stable_usd: CLValueBuilder.key(_stableUSD),
+			amount: CLValueBuilder.u512(0),
 			contract_name: CLValueBuilder.string(contractName),
 		});
 
@@ -146,6 +150,44 @@ class WISETokenClient {
 		  package_hash: utils.createRecipientAddress(_packageHash),
 		  entrypoint: CLValueBuilder.string(entrypointName),
 		  immutable_transformer: CLValueBuilder.key(_ltPackageHash),
+		});
+	
+		const deployHash = await installWasmFile({
+		  chainName: this.chainName,
+		  paymentAmount,
+		  nodeAddress: this.nodeAddress,
+		  keys,
+		  pathToContract: wasmPath,
+		  runtimeArgs,
+		});
+	
+		if (deployHash !== null) {
+		  return deployHash;
+		} else {
+		  throw Error("Problem with installation");
+		}
+	}
+	public async createStakeWithSessionCode(
+		keys: Keys.AsymmetricKey,
+		packageHash: string,
+		entrypointName:string,
+		stakedAmount: string,
+		lockDays: string,
+		referrer: string,
+		paymentAmount: string,
+		wasmPath: string
+	  ) 
+	{
+		const _packageHash = new CLByteArray(
+				Uint8Array.from(Buffer.from(packageHash, "hex"))
+		);
+		const _referrer=new CLKey(new CLAccountHash(Uint8Array.from(Buffer.from(referrer, "hex"))));
+		const runtimeArgs = RuntimeArgs.fromMap({
+		  package_hash: utils.createRecipientAddress(_packageHash),
+		  entrypoint: CLValueBuilder.string(entrypointName),
+		  staked_amount: CLValueBuilder.u256(stakedAmount),
+		  lock_days: CLValueBuilder.u64(lockDays),
+		  referrer: _referrer,
 		});
 	
 		const deployHash = await installWasmFile({

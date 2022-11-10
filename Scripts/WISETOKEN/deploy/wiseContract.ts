@@ -22,7 +22,10 @@ const {
 	LAUNCH_TIME,
 	WISETOKEN_PACKAGE_HASH,
 	LIQUIDITYTRANSFORMER_PACKAGE_HASH,
-	WISETOKEN_SessionCode_WASM_PATH
+	WISETOKEN_SessionCode_WASM_PATH,
+	WISETOKEN_CreateStake_SessionCode_WASM_PATH,
+	STABLE_USD_PACKAGE_HASH,
+	WISETOKEN_INSTALL_FUNCTIONS_PAYMENT_AMOUNT
 } = process.env;
 
 const KEYS = Keys.Ed25519.parseKeyFiles(
@@ -46,7 +49,7 @@ const test = async () => {
 		ROUTER_ADDRESS!,
 		FACTORY_PACKAGE!,
 		LIQUIDITY_GUARD_PACKAGE!,
-		LAUNCH_TIME!,
+		STABLE_USD_PACKAGE_HASH!,
 		WISETOKEN_CONTRACT_NAME!,
 		WISETOKEN_INSTALL_PAYMENT_AMOUNT!,
 		WISETOKEN_WASM_PATH!
@@ -86,7 +89,7 @@ const testSetLiquidityTransformerWithSessionCode = async () => {
 	  WISETOKEN_PACKAGE_HASH!,
 	  entrypointName,
 	  LIQUIDITYTRANSFORMER_PACKAGE_HASH!,
-	  WISETOKEN_INSTALL_PAYMENT_AMOUNT!,
+	  WISETOKEN_INSTALL_FUNCTIONS_PAYMENT_AMOUNT!,
 	  WISETOKEN_SessionCode_WASM_PATH!
 	);
   
@@ -98,6 +101,28 @@ const testSetLiquidityTransformerWithSessionCode = async () => {
   
 };
   
-//testSetLiquidityTransformerWithSessionCode();
+const testcreateStakeWithSessionCode = async () => {
 
+	let entrypointName="create_stake";
+	const installDeployHash = await wise.createStakeWithSessionCode(
+	  KEYS,
+	  WISETOKEN_PACKAGE_HASH!,
+	  entrypointName,
+	  "1000000000",
+	  "730",
+	  "282fabb87a057d991937770223de98ae86f6e652a050825aa196dfd4f480029e",
+	  WISETOKEN_INSTALL_FUNCTIONS_PAYMENT_AMOUNT!,
+	  WISETOKEN_CreateStake_SessionCode_WASM_PATH!
+	);
+  
+	console.log(`... createStake Function deployHash: ${installDeployHash}`);
+  
+	await getDeploy(NODE_ADDRESS!, installDeployHash);
+  
+	console.log(`...createStake Function called successfully through sessionCode.`);
+  
+};
+
+//testSetLiquidityTransformerWithSessionCode();
+//testcreateStakeWithSessionCode();
 //test();
