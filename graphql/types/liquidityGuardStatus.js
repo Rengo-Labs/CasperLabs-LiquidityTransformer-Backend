@@ -14,7 +14,7 @@ const liquidityGuardStatusType = new GraphQLObjectType({
       type: GraphQLString,
     },
     liquidityGuardStatus: {
-      type: GraphQLString,
+      type: GraphQLBoolean,
     },
   }),
 });

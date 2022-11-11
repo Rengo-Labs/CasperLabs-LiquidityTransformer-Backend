@@ -6,7 +6,7 @@ const liquidityGuardStatusSchema = new Schema({
     type: String,
   },
   liquidityGuardStatus: {
-    type: String,
+    type: Boolean,
   },
 });
 

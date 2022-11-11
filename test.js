@@ -1,6 +1,6 @@
 require("dotenv").config();
 var { request } = require("graphql-request");
-var eventObjectId="635fd07e5c30ab072e0b7496";
+var eventObjectId="636e3915ad4c29d36f726593";
 
 async function RefundIssued(refundedTo, amount, deployHash) {
   console.log("Calling handleRefundIssued mutation...");
@@ -590,14 +590,14 @@ async function startTests() {
   //   "730",
   //   "866"
   // );
-  // await StakeEnd("123", "15000000000", "10000000000", "10000000000");
-  // await InterestScraped(
-  //   "123",
-  //   "15000000000",
-  //   "10000000000",
-  //   "1000000000",
-  //   "1000000000"
-  // );
+  //await StakeEnd("[21280, 56574, 17098, 26506, 26873, 49251, 54159, 36489, 34562, 63189, 19464, 46488, 22553, 57389, 17143, 40034]", "16", "0", "0");
+  await InterestScraped(
+    "[33568, 52368, 9568, 40138, 51706, 37378, 49105, 21352, 61428, 18453, 7522, 4263, 57549, 32239, 59170, 43955]",
+    "17",
+    "0",
+    "0",
+    "0"
+  );
   // await NewGlobals(
   //   "1270500001155000",
   //   "115500000000000",
@@ -609,16 +609,16 @@ async function startTests() {
   // );
   // await NewSharePrice("10000000000000", "100000000000");
 
-  await WiseReservation(
-    "1d21f5d80f5417d128dafb4862476041fb5e8f244f8bbf1cfcf457f53603aaee",
-    "ab17e4cf75c59b7a14bc2acb55da5912e8566dccc68add64fc4dea3318dd2765",
-    "1668055888000",
-    "99f85a87138de56f93ed63d09a6d5ccccaf4b093b0ac829c47fee9d95ea8499d",
-    "200000000000",
-    "264000000000000",
-    "15",
-    "1"
-  );
+  // await WiseReservation(
+  //   "1d21f5d80f5417d128dafb4862476041fb5e8f244f8bbf1cfcf457f53603aaee",
+  //   "ab17e4cf75c59b7a14bc2acb55da5912e8566dccc68add64fc4dea3318dd2765",
+  //   "1668055888000",
+  //   "99f85a87138de56f93ed63d09a6d5ccccaf4b093b0ac829c47fee9d95ea8499d",
+  //   "200000000000",
+  //   "264000000000000",
+  //   "15",
+  //   "1"
+  // );
 
   // await RefundIssued("123", "10000000000", "123");
   // await CashBackIssued(

@@ -284,9 +284,9 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
         console.log(newData[3][0] + " = " + newData[3][1]);
         console.log(newData[4][0] + " = " + newData[4][1]);
   
-        reserveA = newData[2][1];
-        reserveB = newData[3][1];
-        blockTimestampLast = newData[4][1];
+        reserveA = newData[3][1];
+        reserveB = newData[4][1];
+        blockTimestampLast = newData[0][1];
       }
       else
       {
@@ -296,11 +296,10 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
         console.log(newData[3][0].data + " = " + newData[3][1].data);
         console.log(newData[4][0].data + " = " + newData[4][1].data);
   
-        reserveA = newData[2][1].data;
-        reserveB = newData[3][1].data;
-        blockTimestampLast = newData[4][1].data;
+        reserveA = newData[3][1].data;
+        reserveB = newData[4][1].data;
+        blockTimestampLast = newData[0][1].data;
       }
-      
 
       console.log("reserveA: ", reserveA);
       console.log("reserveB: ", reserveB);
@@ -443,7 +442,6 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
         lockDays = newData[3][1];
         referralAddress = splitdata(newData[4][1]);
         referralShares = newData[5][1];
-        //stakeID = splitdata(newData[6][1]);
         stakeID = newData[6][1];
         stakedAmount = newData[7][1];
         stakerAddress = splitdata(newData[8][1]);
@@ -469,7 +467,6 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
         lockDays = newData[3][1].data;
         referralAddress = splitdata(newData[4][1].data);
         referralShares = newData[5][1].data;
-        //stakeID = splitdata(newData[6][1].data);
         stakeID = newData[6][1].data;
         stakedAmount = newData[7][1].data;
         stakerAddress = splitdata(newData[8][1].data);
@@ -554,15 +551,15 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
         console.log(newData[9][0] + " = " + newData[9][1]);
         console.log(newData[10][0] + " = " + newData[10][1]);
 
-        stakeID = splitdata(newData[2][1]);
-        stakerAddress = splitdata(newData[3][1]);
+        closeDay = newData[0][1];
+        penaltyAmount = newData[3][1];
         referralAddress = splitdata(newData[4][1]);
-        stakedAmount = newData[5][1];
-        stakesShares = newData[6][1];
-        referralShares = newData[7][1];
-        rewardAmount = newData[8][1];
-        closeDay = newData[9][1];
-        penaltyAmount = newData[10][1];
+        referralShares = newData[5][1];
+        rewardAmount = newData[6][1];
+        stakeID = newData[7][1];
+        stakedAmount = newData[8][1];
+        stakerAddress = splitdata(newData[9][1]);
+        stakesShares = newData[10][1];
       }
       else
       {
@@ -578,15 +575,15 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
         console.log(newData[9][0].data + " = " + newData[9][1].data);
         console.log(newData[10][0].data + " = " + newData[10][1].data);
         
-        stakeID = splitdata(newData[2][1].data);
-        stakerAddress = splitdata(newData[3][1].data);
+        closeDay = newData[0][1].data;
+        penaltyAmount = newData[3][1].data;
         referralAddress = splitdata(newData[4][1].data);
-        stakedAmount = newData[5][1].data;
-        stakesShares = newData[6][1].data;
-        referralShares = newData[7][1].data;
-        rewardAmount = newData[8][1].data;
-        closeDay = newData[9][1].data;
-        penaltyAmount = newData[10][1].data;
+        referralShares = newData[5][1].data;
+        rewardAmount = newData[6][1].data;
+        stakeID = newData[7][1].data;
+        stakedAmount = newData[8][1].data;
+        stakerAddress = splitdata(newData[9][1].data);
+        stakesShares = newData[10][1].data;
       }
       
       console.log("stakeID: ", stakeID);
@@ -635,14 +632,15 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
         console.log(newData[6][0] + " = " + newData[6][1]);
         console.log(newData[7][0] + " = " + newData[7][1]);
         console.log(newData[8][0] + " = " + newData[8][1]);
-  
-        stakeID = splitdata(newData[2][1]);
-        stakerAddress = splitdata(newData[3][1]);
+
+        currentWiseDay = newData[1][1];
+        referrerPenalty = newData[3][1];
         scrapeAmount = newData[4][1];
         scrapeDay = newData[5][1];
-        stakersPenalty = newData[6][1];
-        referrerPenalty = newData[7][1];
-        currentWiseDay = newData[8][1];
+        stakeID = newData[6][1];
+        stakerAddress = splitdata(newData[7][1]);
+        stakersPenalty = newData[8][1];
+        
       }
       else
       {
@@ -656,16 +654,15 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
         console.log(newData[7][0].data + " = " + newData[7][1].data);
         console.log(newData[8][0].data + " = " + newData[8][1].data);
   
-        stakeID = splitdata(newData[2][1].data);
-        stakerAddress = splitdata(newData[3][1].data);
+        currentWiseDay = newData[1][1].data;
+        referrerPenalty = newData[3][1].data;
         scrapeAmount = newData[4][1].data;
         scrapeDay = newData[5][1].data;
-        stakersPenalty = newData[6][1].data;
-        referrerPenalty = newData[7][1].data;
-        currentWiseDay = newData[8][1].data;
+        stakeID = newData[6][1].data;
+        stakerAddress = splitdata(newData[7][1].data);
+        stakersPenalty = newData[8][1].data;
       }
       
-
       console.log("stakeID: ", stakeID);
       console.log("stakerAddress: ", stakerAddress);
       console.log("scrapeAmount: ", scrapeAmount);
