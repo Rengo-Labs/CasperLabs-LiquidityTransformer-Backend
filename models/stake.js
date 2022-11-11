@@ -57,6 +57,12 @@ const stakeSchema = new Schema(
     lastScrapeDay: {
       type: String,
     },
+    stakeEnd: {
+      type: Boolean,
+    },
+    currentStakeableDay: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

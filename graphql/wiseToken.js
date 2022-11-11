@@ -14,6 +14,9 @@ var bigdecimal = require("bigdecimal");
 const Response = require("../models/response");
 const { responseType } = require("./types/response");
 
+function currentStakeableDay() {
+  return (new Date().getTime() - process.env.LAUNCH_TIME) / 86400000;
+}
 const handleGiveStatus = {
   type: responseType,
   description: "Handle Give Status",
@@ -133,7 +136,8 @@ const handleStakeStart = {
         }
         referrer.cmStatus = true;
       }
-
+      
+      let currentStakeableDayValue=currentStakeableDay();
       let stake = new Stake({
         id: args.stakeID,
         staker: staker.id,
@@ -153,6 +157,8 @@ const handleStakeStart = {
         referrerSharesPenalized: ZERO,
         scrapeCount: ZERO,
         lastScrapeDay: null,
+        stakeEnd:false,
+        currentStakeableDay:(currentStakeableDayValue).toString()
       });
 
       // updating mutation status
@@ -213,7 +219,8 @@ const handleStakeEnd = {
       stake.closeDay =args.closeDay;
       stake.penalty = args.penaltyAmount;
       stake.reward = args.rewardAmount;
-
+      stake.stakeEnd=true;
+      
       // updating mutation status
       let eventDataResult = await eventsData.findOne({
         _id: args.eventObjectId,

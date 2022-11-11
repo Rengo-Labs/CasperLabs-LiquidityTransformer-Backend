@@ -64,6 +64,12 @@ const stakeType = new GraphQLObjectType({
     lastScrapeDay: {
       type: GraphQLString,
     },
+    stakeEnd: {
+      type: GraphQLBoolean,
+    },
+    currentStakeableDay: {
+      type: GraphQLString,
+    }
   }),
 });
 
