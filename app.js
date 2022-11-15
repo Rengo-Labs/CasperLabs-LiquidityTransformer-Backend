@@ -27,6 +27,7 @@ const readWasmRouter = require("./routes/readWasm");
 const userReservationDaysRoute = require("./routes/userReservationDaysRoute");
 const globalReservationDaysRoute = require("./routes/globalReservationDaysRoute");
 const claimWiseRoute = require("./routes/claimWiseRoute");
+const pairRoutes = require("./routes/pairRoutes");
 
 var eventsDataModel = require("./models/eventsData");
 
@@ -56,8 +57,6 @@ var redis = require('./connectRedis');
 function deserialize(serializedJavascript){
   return eval('(' + serializedJavascript + ')');
 }
-
-
 
 app.use("/", adminRouter);
 app.use("/", afterDeploymentRouter);
@@ -94,6 +93,7 @@ app.use("/", readWasmRouter);
 app.use("/", userReservationDaysRoute);
 app.use("/", globalReservationDaysRoute);
 app.use("/", claimWiseRoute);
+app.use("/", pairRoutes);
 
 app.use(
   "/graphql",
