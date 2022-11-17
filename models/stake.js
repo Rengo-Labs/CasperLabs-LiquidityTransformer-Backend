@@ -12,6 +12,9 @@ const stakeSchema = new Schema(
     referrer: {
       type: String,
     },
+    referrerId: {
+      type: String,
+    },
     principal: {
       type: String,
     },

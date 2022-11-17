@@ -19,6 +19,9 @@ const stakeType = new GraphQLObjectType({
     referrer: {
       type: GraphQLString,
     },
+    referrerId: {
+      type: GraphQLString,
+    },
     principal: {
       type: GraphQLString,
     },
