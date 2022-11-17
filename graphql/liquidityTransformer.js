@@ -440,11 +440,11 @@ const handleWiseReservation = {
 
       gResDaySnapshot.userCount = gResDay.userCount;
 
-      // updating mutation status
-      let eventDataResult = await eventsData.findOne({
-        _id: args.eventObjectId,
-      });
-      eventDataResult.status = "completed";
+      // // updating mutation status
+      // let eventDataResult = await eventsData.findOne({
+      //   _id: args.eventObjectId,
+      // });
+      // eventDataResult.status = "completed";
   
       let response = await Response.findOne({ id: "1" });
       if (response === null) {
@@ -465,7 +465,7 @@ const handleWiseReservation = {
           await uResDay.save();
           await gResDay.save();
           await gResDaySnapshot.save();
-          await eventDataResult.save({ session });
+          //await eventDataResult.save({ session });
           await response.save({ session });
 
         }, transactionOptions);
@@ -618,7 +618,7 @@ const handleUniswapSwapedResult = {
           " - " +
           process.env.SYNTHETIC_CSPR_PACKAGE +
           " - " +
-          process.env.PAIR_PACKAGE_HASH,
+          process.env.WISE_PAIR_PACKAGE_HASH,
       });
        if (uniswapswapresult == null) {
         uniswapswapresult = new UniswapSwapResult({
@@ -627,14 +627,14 @@ const handleUniswapSwapedResult = {
             " - " +
             process.env.SYNTHETIC_CSPR_PACKAGE +
             " - " +
-            process.env.PAIR_PACKAGE_HASH,
+            process.env.WISE_PAIR_PACKAGE_HASH,
           tokenA: process.env.WISETOKEN_PACKAGE_HASH,
           tokenB: process.env.SYNTHETIC_CSPR_PACKAGE,
           amountTokenA: args.amountTokenA,
           amountTokenB: args.amountTokenB,
           liquidity: args.liquidity,
-          pair: process.env.PAIR_PACKAGE_HASH,
-          to: "hash-0000000000000000000000000000000000000000000000000000000000000000",
+          pair: process.env.WISE_PAIR_PACKAGE_HASH,
+          to: "0000000000000000000000000000000000000000000000000000000000000000",
         });
       } else {
         flag=1;

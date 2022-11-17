@@ -465,7 +465,7 @@ const handleUniswapReserves = {
           " - " +
           process.env.SYNTHETIC_CSPR_PACKAGE +
           " - " +
-          process.env.PAIR_PACKAGE_HASH,
+          process.env.WISE_PAIR_PACKAGE_HASH,
       });
       if (uniswapReservesResult == null) {
         uniswapReservesResult = new UniswapReserves({
@@ -474,13 +474,13 @@ const handleUniswapReserves = {
             " - " +
             process.env.SYNTHETIC_CSPR_PACKAGE +
             " - " +
-            process.env.PAIR_PACKAGE_HASH,
+            process.env.WISE_PAIR_PACKAGE_HASH,
           reserveA: args.reserveA,
           reserveB: args.reserveB,
           blockTimestampLast: args.blockTimestampLast,
-          tokenA: process.env.WISETOKEN_PACKAGE_HASH,
-          tokenB: process.env.SYNTHETIC_CSPR_PACKAGE,
-          pair: process.env.PAIR_PACKAGE_HASH,
+          tokenA: process.env.SYNTHETIC_CSPR_PACKAGE,
+          tokenB: process.env.WISETOKEN_PACKAGE_HASH,
+          pair: process.env.WISE_PAIR_PACKAGE_HASH,
         });
       } else {
         uniswapReservesResult.reserveA = args.reserveA;
