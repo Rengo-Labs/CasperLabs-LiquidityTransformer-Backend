@@ -440,11 +440,11 @@ const handleWiseReservation = {
 
       gResDaySnapshot.userCount = gResDay.userCount;
 
-      // // updating mutation status
-      // let eventDataResult = await eventsData.findOne({
-      //   _id: args.eventObjectId,
-      // });
-      // eventDataResult.status = "completed";
+      // updating mutation status
+      let eventDataResult = await eventsData.findOne({
+        _id: args.eventObjectId,
+      });
+      eventDataResult.status = "completed";
   
       let response = await Response.findOne({ id: "1" });
       if (response === null) {
@@ -465,7 +465,7 @@ const handleWiseReservation = {
           await uResDay.save();
           await gResDay.save();
           await gResDaySnapshot.save();
-          //await eventDataResult.save({ session });
+          await eventDataResult.save({ session });
           await response.save({ session });
 
         }, transactionOptions);
