@@ -65,17 +65,7 @@ const test = async () => {
 	
 	await wise.setContractHash(WISETOKEN_CONTRACT_HASH!);
 
-	//mint
-	// const mintDeployHash = await wise.mint(
-	// 	KEYS,
-	// 	KEYS.publicKey,
-	// 	"10000000000000000000000000000000000000000000000",
-	// 	WISE_FUNCTIONS_INSTALL_PAYMENT_AMOUNT!
-	// );
-	// console.log("...Wise Mint deploy hash: ", mintDeployHash);
-	
-	// await getDeploy(NODE_ADDRESS!, mintDeployHash);
-	// console.log("... Token minted successfully.");
+
 
 	// mint staked amount wise to stakerid
 	// set_scspr
