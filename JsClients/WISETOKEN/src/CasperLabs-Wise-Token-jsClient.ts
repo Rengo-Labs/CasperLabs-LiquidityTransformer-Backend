@@ -311,56 +311,61 @@ class WISETokenClient {
 
 	public async balanceOf(account: string) {
 		try {
-		
-		const result = await utils.contractDictionaryGetter(
+		  const _account = CLPublicKey.fromHex(account);
+		  const key = createRecipientAddress(_account);
+		  const keyBytes = CLValueParsers.toBytes(key).unwrap();
+		  const itemKey = Buffer.from(keyBytes).toString("base64");
+		  const result = await utils.contractDictionaryGetter(
 			this.nodeAddress,
-			account,
-			this.namedKeys.balances
-		);
-		const maybeValue = result.value().unwrap();
-		return maybeValue.value().toString();
-
+			itemKey,
+			this.namedKeys!.balances
+		  );
+		  return result.value();
+	
 		} catch (error) {
-		return "0";
+		  return "0";
 		}
 		
-	}
-
-	public async nonce(accountHash: string) {
-		const result = await utils.contractDictionaryGetter(
-		this.nodeAddress,
-		accountHash,
-		this.namedKeys.nonces
-		);
-		const maybeValue = result.value().unwrap();
-		return maybeValue.value().toString();
-	}
-
-	public async allowance(owner:string, spender:string) {
+	  }
+	  public async balanceOfcontract(accountHash: string) {
 		try {
-		const _spender = new CLByteArray(
-			Uint8Array.from(Buffer.from(spender, "hex"))
-		);
-
-		const keyOwner=new CLKey(new CLAccountHash(Uint8Array.from(Buffer.from(owner, "hex"))));
-		const keySpender = createRecipientAddress(_spender);
-		const finalBytes = concat([CLValueParsers.toBytes(keyOwner).unwrap(), CLValueParsers.toBytes(keySpender).unwrap()]);
-		const blaked = blake.blake2b(finalBytes, undefined, 32);
-		const encodedBytes = Buffer.from(blaked).toString("hex");
-
+		const _account = CLPublicKey.fromHex(accountHash);
+		const key = createRecipientAddress(_account);
+		const keyBytes = CLValueParsers.toBytes(key).unwrap();
+		const itemKey = Buffer.from(keyBytes).toString("base64");
 		const result = await utils.contractDictionaryGetter(
+		  this.nodeAddress,
+		  itemKey,
+		  this.namedKeys!.balances
+		);
+		return result.value();
+	
+	  } catch (error) {
+		return "0";
+	  }
+	  }
+	
+	public async allowance(owner: RecipientType, spender: RecipientType) {
+		try {
+		  // TODO: REUSEABLE METHOD
+		  const keyOwner = createRecipientAddress(owner);
+		  const keySpender = createRecipientAddress(spender);
+		  const finalBytes = concat([CLValueParsers.toBytes(keyOwner).unwrap(), CLValueParsers.toBytes(keySpender).unwrap()]);
+		  const blaked = blake.blake2b(finalBytes, undefined, 32);
+		  const encodedBytes = Buffer.from(blaked).toString("hex");
+	 
+		  const result = await utils.contractDictionaryGetter(
 			this.nodeAddress,
 			encodedBytes,
-			this.namedKeys.allowances
-		);
-
-		const maybeValue = result.value().unwrap();
-		return maybeValue.value().toString();
+			this.namedKeys!.allowances
+		  );
+	 
+		  return result.value();
 		} catch (error) {
-		return "0";
+		  return "0";
 		}
-
-	}
+		
+	  }
 	
 	public async approve(
 		keys: Keys.AsymmetricKey,
