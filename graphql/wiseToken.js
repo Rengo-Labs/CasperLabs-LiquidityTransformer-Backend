@@ -336,6 +336,7 @@ const handleNewGlobals = {
     currentWiseDay: { type: GraphQLString },
     wiseAddress: { type: GraphQLString },
     UNISWAP_PAIR: { type: GraphQLString },
+    blockHash: { type: GraphQLString },
     eventObjectId: { type: GraphQLString }
   },
   async resolve(parent, args, context) {
@@ -346,8 +347,8 @@ const handleNewGlobals = {
       global.sharePrice = args.shareRate;
       global.referrerShares = args.referrerShares;
       global.currentWiseDay = args.currentWiseDay;
-      global.ownerlessSupply =  (await WiseTokenContract.balanceOf(args.wiseAddress,args.UNISWAP_PAIR.toLowerCase())).toString();
-      global.circulatingSupply = (await WiseTokenContract.getTotalSupply(args.wiseAddress)).toString();
+      global.ownerlessSupply =  (await WiseTokenContract.balanceOfBlock(args.wiseAddress,args.UNISWAP_PAIR.toLowerCase(),args.blockHash)).toString();
+      global.circulatingSupply = (await WiseTokenContract.getTotalSupplyBlock(args.wiseAddress,args.blockHash)).toString();
 
       global.liquidSupply = (
         new bigdecimal.BigDecimal(global.circulatingSupply).subtract(new bigdecimal.BigDecimal(global.ownerlessSupply))

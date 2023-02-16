@@ -265,7 +265,8 @@ async function NewGlobals(
   referrerShares,
   currentWiseDay,
   wiseAddress,
-  UNISWAP_PAIR
+  UNISWAP_PAIR,
+  blockHash
 ) {
   console.log("Calling handleNewGlobals mutation...");
   let response = await request(
@@ -278,6 +279,7 @@ async function NewGlobals(
       $currentWiseDay: String!, 
       $wiseAddress: String!, 
       $UNISWAP_PAIR: String!,
+      $blockHash: String!,
       $eventObjectId: String!)
       {
       handleNewGlobals( 
@@ -288,6 +290,7 @@ async function NewGlobals(
         currentWiseDay: $currentWiseDay,
         wiseAddress: $wiseAddress,
         UNISWAP_PAIR: $UNISWAP_PAIR,
+        blockHash: $blockHash,
         eventObjectId: $eventObjectId) {
               result
           }
@@ -301,6 +304,7 @@ async function NewGlobals(
       currentWiseDay: currentWiseDay,
       wiseAddress: wiseAddress,
       UNISWAP_PAIR: UNISWAP_PAIR,
+      blockHash:blockHash,
       eventObjectId:eventObjectId
     }
   );
@@ -605,7 +609,8 @@ async function startTests() {
   //   "115500000000000001155000",
   //   "0",
   //   "11ac763d5e81e95403e32a0648c90da75a9d8e1e5d908a609b805420711d318b",
-  //   "24a4e46fd600eea1f057aeb7f3bf70a4468b5ec3c3098c8037b6952a8ec57e28"
+  //   "24a4e46fd600eea1f057aeb7f3bf70a4468b5ec3c3098c8037b6952a8ec57e28",
+  //   "11ac763d5e81e95403e32a0648c90da75a9d8e1e5d908a609b805420711d318b",
   // );
   // await NewSharePrice("10000000000000", "100000000000");
 

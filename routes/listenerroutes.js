@@ -767,6 +767,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
             $currentWiseDay: String!, 
             $wiseAddress: String!, 
             $UNISWAP_PAIR: String!,
+            $blockHash: String!
             $eventObjectId: String!)
             {
             handleNewGlobals( 
@@ -777,6 +778,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
               currentWiseDay: $currentWiseDay,
               wiseAddress: $wiseAddress,
               UNISWAP_PAIR: $UNISWAP_PAIR,
+              blockHash: $blockHash,
               eventObjectId: $eventObjectId) {
                     result
                 }
@@ -790,6 +792,7 @@ async function geteventsdata(eventResult,_deployHash, _timestamp, _block_hash, _
           currentWiseDay: currentWiseDay,
           wiseAddress: wiseAddress,
           UNISWAP_PAIR: UNISWAP_PAIR,
+          blockHash:block_hash,
           eventObjectId:eventResult._id
         }
       )

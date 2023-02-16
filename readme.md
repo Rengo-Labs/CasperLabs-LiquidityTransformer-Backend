@@ -9,13 +9,17 @@ This is the official WISE graphQL code for the Casper network.
 npm install to install the require packages
 npm start to start the server
 
-AWS Link: http://wisegraphqlbackendfinalized-env-1.eba-kecy6vfp.us-east-1.elasticbeanstalk.com/
+### Architecture Documentation: 
+https://docs.google.com/document/d/1eiP_UrAI2vrevCzMLlosOp23WibxohCiv6BirpU99V0/edit?usp=sharing
 
-Endpoints Documentation Link:  
+### AWS Link: 
+http://wisegraphqlbackendfinalized-env-1.eba-kecy6vfp.us-east-1.elasticbeanstalk.com/
+
+### Endpoints Documentation Link:  
 
 https://docs.google.com/document/d/1vyNzyHQdJMF0YG0co8cLKs7fq4T_71R2KtmSGAez4FY/edit?usp=sharing
 
-Smart Contract Documentation Link: 
+### Smart Contract Documentation Link: 
 
 https://docs.google.com/document/d/19ECYDI-z4d1-UBpL6iHBkgL6xebHtGd79i35O1Kbfms/edit?usp=sharing
 

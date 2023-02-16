@@ -125,6 +125,27 @@ export const contractDictionaryGetter = async (
   }
 };
 
+export const contractDictionaryGetterBlock = async (
+  stateRootHash: string,
+  nodeAddress: string,
+  dictionaryItemKey: string,
+  seedUref: string,
+) => {
+
+  const client = new CasperServiceByJsonRPC(nodeAddress);
+
+  const storedValue = await client.getDictionaryItemByURef(
+    stateRootHash,
+    dictionaryItemKey,
+    seedUref
+  );
+ 
+  if (storedValue && storedValue.CLValue instanceof CLValue) {
+    return storedValue.CLValue!;
+  } else {
+    throw Error("Invalid stored value");
+  }
+};
 
 export const contractHashToByteArray = (contractHash: string) =>
   Uint8Array.from(Buffer.from(contractHash, "hex"));
