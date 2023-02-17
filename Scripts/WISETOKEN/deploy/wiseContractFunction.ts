@@ -64,7 +64,10 @@ const wise = new WISETokenClient(
 const test = async () => {
 	
 	await wise.setContractHash(WISETOKEN_CONTRACT_HASH!);
+	// // // balanceof
 
+  	// let balance = await wise.balanceOf("24a56544c522eca7fba93fb7a6cef83e086706fd87b2f344f5c3dad3603d11f1");
+  	// console.log(`... Balance : ${balance}`);
 
 
 	// mint staked amount wise to stakerid

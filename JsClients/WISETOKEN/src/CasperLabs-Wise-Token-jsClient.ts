@@ -266,7 +266,7 @@ import {
 	  );
 	  return result.value();
 	}
-	public async totalSupplyBlock(stateRootHash: string) {
+	public async totalSupplyBlock(stateRootHash: any) {
 	  const result = await contractSimpleGetterBlock(
 		stateRootHash,
 		this.nodeAddress,

@@ -37,7 +37,7 @@ router.route("/wiseBalanceAgainstUser/:contractHash/:user").get(async function (
     return res.status(200).json({
       success: true,
       message: "Balance has been found against this user.",
-      balance: balance,
+      balance: `${balance}`,
     });
   } catch (error) {
     console.log("error (try-catch) : " + error);
