@@ -1,7 +1,7 @@
 require("dotenv").config();
 var express = require("express");
 var router = express.Router();
-var {CLValue,encodeBase16} = require("casper-js-sdk");
+var {encodeBase16} = require("casper-js-sdk");
 var utils = require("../JsClients/LIQUIDITYTRANSFORMER/src/utils");
 var allcontractsDataModel = require("../models/allcontractsData");
 

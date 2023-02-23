@@ -10,14 +10,9 @@ const { graphqlHTTP } = require("express-graphql");
 const schema = require("./graphql/schema");
 
 //routers
-var adminRouter = require("./routes/adminroutes");
-var afterDeploymentRouter = require("./routes/afterDeploymentroutes");
-var listenerRouter = require("./routes/listenerroutes");
-const depositedLiquidityRoute = require("./routes/depositedLiquidityRoute");
-const formedLiquidityRoute = require("./routes/formedLiquidityRoute");
-const masterRecordRoute = require("./routes/masterRecordRoute");
-const withdrawalRoute = require("./routes/withdrawalRoute");
-const uniswapSwapResultRoute = require("./routes/uniswapSwapResultRoutes");
+const adminRouter = require("./routes/adminroutes");
+const afterDeploymentRouter = require("./routes/afterDeploymentroutes");
+const listenerRouter = require("./routes/listenerroutes");
 const stakeRoute = require("./routes/stakeRoute");
 const globalRoutes = require("./routes/globalRoutes");
 const referralRoutes = require("./routes/referralRoutes");
@@ -76,11 +71,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/", listenerRouter.router);
-app.use("/", depositedLiquidityRoute);
-app.use("/", formedLiquidityRoute);
-app.use("/", masterRecordRoute);
-app.use("/", withdrawalRoute);
-app.use("/", uniswapSwapResultRoute);
 app.use("/", stakeRoute);
 app.use("/", globalRoutes);
 app.use("/", referralRoutes);

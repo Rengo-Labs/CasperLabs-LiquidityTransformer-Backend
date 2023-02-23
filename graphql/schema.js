@@ -4,9 +4,6 @@ const { GraphQLSchema, GraphQLObjectType } = require("graphql");
 // Import queries
 const { responses, response, user, global } = require("./queries");
 
-// Import mutations
-const { handleNewResponse } = require("./mutations");
-
 const {
   handleGiveStatus,
   handleStakeStart,
@@ -49,7 +46,6 @@ const MutationType = new GraphQLObjectType({
   name: "MutationType",
   description: "Mutations",
   fields: {
-    handleNewResponse,
     handleGiveStatus,
     handleStakeStart,
     handleStakeEnd,
