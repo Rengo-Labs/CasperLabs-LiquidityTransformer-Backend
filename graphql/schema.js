@@ -2,7 +2,7 @@
 const { GraphQLSchema, GraphQLObjectType } = require("graphql");
 
 // Import queries
-const { responses, response, user, global } = require("./queries");
+const { user, global } = require("./queries");
 
 const {
   handleGiveStatus,
@@ -34,8 +34,6 @@ const QueryType = new GraphQLObjectType({
   name: "QueryType",
   description: "Queries",
   fields: {
-    responses,
-    response,
     user,
     global,
   },
