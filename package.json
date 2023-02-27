@@ -46,6 +46,8 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.3.3",
     "aws-sdk": "^2.1224.0",
-    "node-cron": "^2.0.3"
+    "node-cron": "^2.0.3",
+    "swagger-jsdoc": "^6.0.1",
+    "swagger-ui-express": "^4.1.6"
   }
 }

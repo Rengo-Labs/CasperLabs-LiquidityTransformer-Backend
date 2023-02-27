@@ -3,6 +3,8 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+const swaggerUI = require("swagger-ui-express");
+const swaggerJsDoc = require("swagger-jsdoc");
 
 var app = express();
 require("dotenv").config();
@@ -23,6 +25,25 @@ const globalReservationDaysRoute = require("./routes/globalReservationDaysRoute"
 const claimWiseRoute = require("./routes/claimWiseRoute");
 const pairRoutes = require("./routes/pairRoutes");
 
+//swaggerJsDocOptions
+const options = {
+	definition: {
+		openapi: "3.0.0",
+		info: {
+			title: "Wise GraphQL API",
+			version: "1.0.0",
+			description: "A simple Express Wise GraphQL API",
+		},
+		servers: [
+			{
+				url: "http://localhost:3000",
+			},
+		],
+	},
+	apis: ["./routes/*.js"],
+};
+
+const specs = swaggerJsDoc(options);
 
 //calling forwardLiquidity script
 //require("./Scripts/LIQUIDITYTRANSFORMER/deploy/forwardLiquidity.ts");
@@ -40,6 +61,7 @@ require("./backupDatabase");
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

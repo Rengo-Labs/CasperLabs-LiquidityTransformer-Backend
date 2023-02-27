@@ -43,8 +43,6 @@ const global = {
 };
 
 module.exports = {
-  responses,
-  response,
   user,
   global,
 };

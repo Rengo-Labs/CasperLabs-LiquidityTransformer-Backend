@@ -6,8 +6,23 @@ This is the official WISE graphQL code for the Casper network.
 
 ## Running Locally
 
-npm install to install the require packages
-npm start to start the server
+* npm install to install all the packages in the package.json file
+* make a new file and name it .env
+* copy paste the env.example file content into .env file
+* make sure env variables are set properly
+* add all contract and package hashes in the database by calling addcontractandpackageHash    endpoint
+* npm start to run the server
+
+#### GraphQL Documentation:
+
+* Run the backend locally
+* Goto http://localhost:3000/graphql
+* Then go to docs
+
+#### Swagger Documentation:
+
+* Run the backend locally
+* Goto https://localhost:3000/api-docs
 
 ### Architecture Documentation: 
 https://docs.google.com/document/d/1eiP_UrAI2vrevCzMLlosOp23WibxohCiv6BirpU99V0/edit?usp=sharing
