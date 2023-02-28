@@ -1,4 +1,4 @@
-# Casper_Wise_V2 GraphQL
+# Casper Liquidity Transformer Backend
 
 Casper Wise is an innovative and highly secure DeFi ecosystem.
 
